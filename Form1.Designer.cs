@@ -72,7 +72,7 @@
             this.vdFramedControl1.Location = new System.Drawing.Point(12, 11);
             this.vdFramedControl1.Name = "vdFramedControl1";
             this.vdFramedControl1.PropertyGridWidth = ((uint)(300u));
-            this.vdFramedControl1.Size = new System.Drawing.Size(1203, 656);
+            this.vdFramedControl1.Size = new System.Drawing.Size(1207, 656);
             this.vdFramedControl1.TabIndex = 43;
             // 
             // butNew
