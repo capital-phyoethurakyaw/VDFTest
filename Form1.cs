@@ -296,6 +296,8 @@ namespace VFD1
 
                     }
                 }
+
+               // Set instrument label and put at dtInstrument table 
                 TextInsert(ObserverCenter.Center.x, ObserverCenter.Center.y, "Instrument" + i.ToString());
                 dtInstrument.Rows.Add(new object[] {
                 i , "Instrument" + i.ToString(),  Convert.ToInt32(PathLength).ToString()
