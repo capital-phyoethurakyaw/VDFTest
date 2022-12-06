@@ -170,14 +170,17 @@ namespace VFD1
             //Changed to Target's height Even inside range
             if ((ObsCenter.MidPoint.y - (ObsCenter.Height / 2)) <= TargetCenter.MidPoint.y && (ObsCenter.MidPoint.y + (ObsCenter.Height / 2)) >= TargetCenter.MidPoint.y && ObserverCenter.Center.x > ObsCenter.MidPoint.x)
             {
-                //Total would be 3 path
-                //Add extra ObsServer temp 
+                //Total would be 3 path 
+                // Get vector distance between points 
+                //eg. To get magnitude value points  (x1,y1), (x2,y2)
+                //    |(x1-x2)| + |(y1-y2)|  
+                //   val        +       val
                 DrawRoute(ObserverCenter.Center.x, ObserverCenter.Center.y, ObserverCenter.Center.x, (ObserverCenter.Center.y + (ObsCenter.Height)));
-                val += Math.Abs(Math.Abs(ObserverCenter.Center.y) - Math.Abs((ObserverCenter.Center.y + (ObsCenter.Height))));
+                val += Math.Abs( ObserverCenter.Center.y -   ( ObserverCenter.Center.y  +  ObsCenter.Height  ));
                 DrawRoute(ObserverCenter.Center.x, (ObserverCenter.Center.y + ObsCenter.Height), TargetCenter.MidPoint.x, (ObserverCenter.Center.y + ObsCenter.Height));
-                val += Math.Abs(Math.Abs(ObserverCenter.Center.x) - Math.Abs(TargetCenter.MidPoint.x));
+                val += Math.Abs( ObserverCenter.Center.x  -   TargetCenter.MidPoint.x );
                 DrawRoute(TargetCenter.MidPoint.x, (ObserverCenter.Center.y + ObsCenter.Height), TargetCenter.MidPoint.x, TargetCenter.MidPoint.y);
-                val += Math.Abs(Math.Abs((ObserverCenter.Center.y + ObsCenter.Height)) - Math.Abs(TargetCenter.MidPoint.y));
+                val += Math.Abs( (ObserverCenter.Center.y + ObsCenter.Height) -   TargetCenter.MidPoint.y );
                 length = val;
                 return true;
             }
@@ -195,14 +198,17 @@ namespace VFD1
             //Changed to Target's width Even inside range
             if ((ObsCenter.MidPoint.x - (ObsCenter.Width / 2)) <= TargetCenter.MidPoint.x && (ObsCenter.MidPoint.x + (ObsCenter.Width / 2)) >= TargetCenter.MidPoint.x && ObserverCenter.Center.y > ObsCenter.MidPoint.y)
             {
-                //Total would be 3 path
-                //Add extra ObsServer temp 
+                //Total would be 3 path 
+                // Get vector distance between points 
+                //eg. To get magnitude value points  (x1,y1), (x2,y2)
+                //    |(x1-x2)| + |(y1-y2)|  
+                //   val        +       val
                 DrawRoute(ObserverCenter.Center.x, ObserverCenter.Center.y, (ObserverCenter.Center.x+ ObsCenter.Width), ObserverCenter.Center.y);
-                val += Math.Abs(Math.Abs(ObserverCenter.Center.x) - Math.Abs((ObserverCenter.Center.x + ObsCenter.Width)));
+                val += Math.Abs( ObserverCenter.Center.x  -   ( ObserverCenter.Center.x + ObsCenter.Width ));
                 DrawRoute((ObserverCenter.Center.x + ObsCenter.Width), ObserverCenter.Center.y, (ObserverCenter.Center.x + ObsCenter.Width), TargetCenter.MidPoint.y);
-                val += Math.Abs(Math.Abs(ObserverCenter.Center.y) - Math.Abs(TargetCenter.MidPoint.y));
+                val += Math.Abs( ObserverCenter.Center.y  -  TargetCenter.MidPoint.y) ;
                 DrawRoute((ObserverCenter.Center.x + ObsCenter.Width), TargetCenter.MidPoint.y, TargetCenter.MidPoint.x, TargetCenter.MidPoint.y);
-                val += Math.Abs(Math.Abs((ObserverCenter.Center.x + ObsCenter.Width)) - Math.Abs(TargetCenter.MidPoint.x));
+                val += Math.Abs( ( ObserverCenter.Center.x  + ObsCenter.Width)  -   TargetCenter.MidPoint.x );
                 length = val;
                 return true;
             }
@@ -266,21 +272,22 @@ namespace VFD1
                 }
                 else
                 {
-                    //Make Shortern Priority
+                    //Make Shortern Priority // It can also skip 
+                    //eg if vertical path is shorter => Vertical path > horizontal
                     if ((TargetCenter.MidPoint.y - ObserverCenter.Center.y) < (TargetCenter.MidPoint.x - ObserverCenter.Center.x))
                     {
                         if ((ObsCenter.MidPoint.y - (ObsCenter.Height / 2)) <= TargetCenter.MidPoint.y && (ObsCenter.MidPoint.y + (ObsCenter.Height / 2)) >= TargetCenter.MidPoint.y)
-                            PathLength=GoVertical(TargetCenter, ObserverCenter);
+                            PathLength = GoVertical(TargetCenter, ObserverCenter);
                         else
-                            PathLength=GoHorizontal(TargetCenter, ObserverCenter);
+                            PathLength = GoHorizontal(TargetCenter, ObserverCenter);
                     }
                     else
                     {
                         if ((ObsCenter.MidPoint.x - (ObsCenter.Width / 2)) <= TargetCenter.MidPoint.x && (ObsCenter.MidPoint.x + (ObsCenter.Width / 2)) >= TargetCenter.MidPoint.x)
 
-                            PathLength=GoHorizontal(TargetCenter, ObserverCenter);
+                            PathLength = GoHorizontal(TargetCenter, ObserverCenter);
                         else
-                            PathLength=GoVertical(TargetCenter, ObserverCenter);
+                            PathLength = GoVertical(TargetCenter, ObserverCenter);
 
                     }
                 }
@@ -295,11 +302,15 @@ namespace VFD1
         /// </summary>
         private double GoVertical(VectorDraw.Geometry.Box TargetCenter, VectorDraw.Professional.vdFigures.vdCircle ObserverCenter)
         {
+            // Get vector distance between points 
+            //eg. To get magnitude value points  (x1,y1), (x2,y2)
+            //    |(x1-x2)| + |(y1-y2)|
+            //   val        +       val
             double val = 0.0;
             DrawRoute(ObserverCenter.Center.x, ObserverCenter.Center.y, TargetCenter.MidPoint.x, ObserverCenter.Center.y);
-            val += Math.Abs(Math.Abs(ObserverCenter.Center.x) - Math.Abs(TargetCenter.MidPoint.x));
+            val += Math.Abs( ObserverCenter.Center.x  -  TargetCenter.MidPoint.x );
             DrawRoute(TargetCenter.MidPoint.x, ObserverCenter.Center.y, TargetCenter.MidPoint.x, TargetCenter.MidPoint.y);
-            val += Math.Abs(Math.Abs(ObserverCenter.Center.y) - Math.Abs(TargetCenter.MidPoint.y));
+            val += Math.Abs( ObserverCenter.Center.y  - TargetCenter.MidPoint.y );
             return val;
         }
         /// <summary>
@@ -307,11 +318,15 @@ namespace VFD1
         /// </summary>
         private double GoHorizontal(VectorDraw.Geometry.Box TargetCenter, VectorDraw.Professional.vdFigures.vdCircle ObserverCenter)
         {
+            // Get vector distance between points 
+            //eg. To get magnitude value points  (x1,y1), (x2,y2)
+            //    |(x1-x2)| + |(y1-y2)|
+            //   val        +       val
             double val = 0.0;
             DrawRoute(ObserverCenter.Center.x, ObserverCenter.Center.y, ObserverCenter.Center.x, TargetCenter.MidPoint.y);
-            val += Math.Abs(Math.Abs(ObserverCenter.Center.y) - Math.Abs(TargetCenter.MidPoint.y));
+            val += Math.Abs( ObserverCenter.Center.y  -  TargetCenter.MidPoint.y );
             DrawRoute(ObserverCenter.Center.x, TargetCenter.MidPoint.y, TargetCenter.MidPoint.x, TargetCenter.MidPoint.y);
-            val += Math.Abs(Math.Abs(ObserverCenter.Center.x) - Math.Abs(TargetCenter.MidPoint.x));
+            val += Math.Abs( ObserverCenter.Center.x  -  TargetCenter.MidPoint.x );
             return val;
         }
         /// <summary>
