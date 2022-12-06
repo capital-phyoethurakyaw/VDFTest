@@ -272,10 +272,13 @@ namespace VFD1
                 }
                 else
                 {
-                    //Make Shortern Priority // It can also skip 
+                    // It is okay to go vertical first or horizontal first. 
+                    //But, Make Shortern Priority  
                     //eg if vertical path is shorter => Vertical path > horizontal
                     if ((TargetCenter.MidPoint.y - ObserverCenter.Center.y) < (TargetCenter.MidPoint.x - ObserverCenter.Center.x))
                     {
+                        //In second route, Check and avoid not to pass through to an obstacle . 
+                        //if exist, change route
                         if ((ObsCenter.MidPoint.y - (ObsCenter.Height / 2)) <= TargetCenter.MidPoint.y && (ObsCenter.MidPoint.y + (ObsCenter.Height / 2)) >= TargetCenter.MidPoint.y)
                             PathLength = GoVertical(TargetCenter, ObserverCenter);
                         else
@@ -283,6 +286,8 @@ namespace VFD1
                     }
                     else
                     {
+                        //In second route, Check and avoid not to pass through to an obstacle . 
+                        //if exist, change route
                         if ((ObsCenter.MidPoint.x - (ObsCenter.Width / 2)) <= TargetCenter.MidPoint.x && (ObsCenter.MidPoint.x + (ObsCenter.Width / 2)) >= TargetCenter.MidPoint.x)
 
                             PathLength = GoHorizontal(TargetCenter, ObserverCenter);
