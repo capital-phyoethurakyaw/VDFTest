@@ -9,16 +9,22 @@ using System.Windows.Forms;
 
 namespace VFD1
 {
+
+    //Let Us Assume Destination and Obstacle fixed//
     public partial class Form1 : Form
     {
+        /// <summary>
+        /// InitializComponent
+        /// </summary>
         public Form1()
         {
             InitializeComponent();
         }
-
+        /// <summary>
+        /// Draw a circle instrument entity with a point specified at (30, 30) with radius 5 as default in a two-dimensional plane.
+        /// </summary>
         private void butCircle_Click(object sender, EventArgs e)
-        {
-
+        { 
             butCircle.Enabled = false; 
             VectorDraw.Professional.vdFigures.vdCircle onecircle = new VectorDraw.Professional.vdFigures.vdCircle(); 
             onecircle.SetUnRegisterDocument(vdFramedControl1.BaseControl.ActiveDocument);
@@ -35,7 +41,9 @@ namespace VFD1
           
             vdFramedControl1.BaseControl.ActiveDocument.Redraw(true);
         }
-
+        /// <summary>
+        /// Get a new document in a two-dimensional plane and make all action available.
+        /// </summary>
         private void butNew_Click(object sender, EventArgs e)
         {
             vdFramedControl1.BaseControl.ActiveDocument.New();
@@ -44,47 +52,49 @@ namespace VFD1
             vdFramedControl1.Select();
             this.Refresh();
         }
-
+        /// <summary>
+        /// Show command line for operation and XY axis.
+        /// </summary>
         private void Form1_Load(object sender, EventArgs e)
         {
             vdFramedControl1.SetLayoutStyle(vdControls.vdFramedControl.LayoutStyle.CommandLine, true);
-            vdFramedControl1.SetLayoutStyle(vdControls.vdFramedControl.LayoutStyle.LayoutTab, false);
-            // vdFramedControl1.UnLoadMenu();
-            vdFramedControl1.BaseControl.ActiveDocument.ShowUCSAxis = false;
-   string path = System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\RequiredFiles\\";
-            vdFramedControl1.BaseControl.ActiveDocument.SupportPath = path;
+            vdFramedControl1.BaseControl.ActiveDocument.ShowUCSAxis = true;
         }
-
+        /// <summary>
+        /// Draw poly lines with 4 sides at (-10, -10) ,(40, -10) ,(40, 20 ),(-10, 20 ) as default on XY axis.
+        /// And we will assume this polygon as a reference destination by observer instrument. 
+        /// </summary>
         private void butPolyline_Click(object sender, EventArgs e)
         {
             butPolyline.Enabled = false;
-             
             VectorDraw.Professional.vdFigures.vdPolyline onepoly = new VectorDraw.Professional.vdFigures.vdPolyline(); 
             onepoly.SetUnRegisterDocument(vdFramedControl1.BaseControl.ActiveDocument);
             onepoly.setDocumentDefaults();
-
             onepoly.VertexList.Add(new VectorDraw.Geometry.gPoint(-10, -10));
             onepoly.VertexList.Add(new VectorDraw.Geometry.gPoint(40, -10));
-            onepoly.VertexList.Add(new VectorDraw.Geometry.Vertex(40, 20, 0));
-            onepoly.VertexList.Add(new VectorDraw.Geometry.Vertex(-10, 20, 0));
+            onepoly.VertexList.Add(new VectorDraw.Geometry.gPoint(40, 20 ));
+            onepoly.VertexList.Add(new VectorDraw.Geometry.gPoint(-10, 20 ));
             onepoly.ToolTip = "Destination";
             onepoly.Flag = VectorDraw.Professional.Constants.VdConstPlineFlag.PlFlagCLOSE;
             onepoly.PenColor.ColorIndex = 200; 
             vdFramedControl1.BaseControl.ActiveDocument.ActiveLayOut.Entities.AddItem(onepoly);
-             
             vdFramedControl1.BaseControl.ActiveDocument.ActiveLayOut.ZoomWindow(new VectorDraw.Geometry.gPoint(-100.0, -40.0), new VectorDraw.Geometry.gPoint(140.0, 90.0));
-          
             vdFramedControl1.BaseControl.ActiveDocument.Redraw(true); 
 
         }
-
+        /// <summary>
+        /// Calculate route setting for 4 observer instruments.
+        /// </summary>
         private void button1_Click(object sender, EventArgs e)
         {
             button1.Enabled = false; 
 
             Routing(); 
         }
-
+        /// <summary>
+        /// Draw poly lines with 4 sides at (5, 40) ,(30, 40) ,(30, 60 ),(5, 60 ) as default on XY axis.
+        /// And we will assume this polygon as an obstacle object of observer instrument. 
+        /// </summary>
         private void button3_Click(object sender, EventArgs e)
         {
             button3.Enabled = false; 
@@ -104,7 +114,11 @@ namespace VFD1
            
             vdFramedControl1.BaseControl.ActiveDocument.Redraw(true); 
         }
-
+        /// <summary>
+        /// 2 Functions
+        /// Find and Make all objects with respective labels.
+        /// Check whether the specified 4 instruments, 1 obstacle and 1 destination objects are completed or not.
+        /// </summary>
         private void Routing()
         {
             List<VectorDraw.Professional.vdFigures.vdCircle> LstObserver = new List<VectorDraw.Professional.vdFigures.vdCircle>();
@@ -145,6 +159,11 @@ namespace VFD1
                 MessageBox.Show("Please make setting with 1 Destination, 1 Obstacle and 4 Instruments. If Error Repeat, get new Document", "Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
+        /// <summary>
+        /// Check 2 or 3 path 
+        /// return false if 2 paths for vertically
+        /// draw and return true if 3 paths for vertically
+        /// </summary>
         private bool IsOver2SideHeight(VectorDraw.Geometry.Box ObsCenter, VectorDraw.Geometry.Box TargetCenter, VectorDraw.Professional.vdFigures.vdCircle ObserverCenter, out double length)
         {
             double val = 0.0;
@@ -165,8 +184,12 @@ namespace VFD1
             length = val;
             return false;
         }
-
-        private bool IsOver2SideWeight(VectorDraw.Geometry.Box ObsCenter, VectorDraw.Geometry.Box TargetCenter, VectorDraw.Professional.vdFigures.vdCircle ObserverCenter, out double length)
+        /// <summary>
+        /// Check 2 or 3 path 
+        /// return false if 2 paths for horizontally
+        /// draw and return true if 3 paths for horizontally
+        /// </summary>
+        private bool IsOver2SideWidth(VectorDraw.Geometry.Box ObsCenter, VectorDraw.Geometry.Box TargetCenter, VectorDraw.Professional.vdFigures.vdCircle ObserverCenter, out double length)
         {
             double val = 0.0;
             //Changed to Target's width Even inside range
@@ -186,6 +209,9 @@ namespace VFD1
             length = val;
             return false;
         }
+        /// <summary>
+        /// Draw text for Destination and Obstacle according to x,y values on XY axis. 
+        /// </summary>
         private void TextInsert(double x, double y, string txt)
         {
             VectorDraw.Professional.vdFigures.vdText text = new VectorDraw.Professional.vdFigures.vdText();
@@ -198,6 +224,9 @@ namespace VFD1
             vdFramedControl1.BaseControl.ActiveDocument.Redraw(true);
             //We set as active layout the first addede layo
         }
+        /// <summary>
+        /// Draw text for instrument according to x,y values and set route on XY axis. 
+        /// </summary>
         private void SetRoute(List<VectorDraw.Professional.vdFigures.vdCircle> LstObserver, VectorDraw.Professional.vdFigures.vdPolyline Tar, VectorDraw.Professional.vdFigures.vdPolyline Obs)
         {
             dtInstrument = new DataTable();
@@ -211,25 +240,27 @@ namespace VFD1
             {
                 i++;
                 double PathLength = 0.0; 
-                var TargetCenter = Tar.VertexList.GetBox();// Tar.VertexList.Id;
-                var ObsCenter = Obs.VertexList.GetBox();// Tar.VertexList.Id;
+                //Get Center of Destination Target and Obstacle.
+                var TargetCenter = Tar.VertexList.GetBox(); 
+                var ObsCenter = Obs.VertexList.GetBox(); 
 
                 //Avoid height Obstacle
+                // Check Obstacle height is inside area of Instrument height
                 if ((ObsCenter.MidPoint.y - (ObsCenter.Height / 2)) <= ObserverCenter.Center.y && (ObsCenter.MidPoint.y + (ObsCenter.Height / 2)) >= ObserverCenter.Center.y)
                 {
-                    if (!IsOver2SideHeight(ObsCenter, TargetCenter, ObserverCenter, out double length))
+                    if (!IsOver2SideHeight(ObsCenter, TargetCenter, ObserverCenter, out double length))// Draw if 3 paths, if not draw 2 paths.
                     {
-                        PathLength = GoHorizontal(TargetCenter, ObserverCenter);
+                        PathLength = GoHorizontal(TargetCenter, ObserverCenter);//draw 2 paths.
                     }
                     else
-                        PathLength = length;
-                       
+                        PathLength = length; 
                 }
                 //Avoid Widht Obstacle
+                // Check Obstacle width is inside area of Instrument width
                 else if ((ObsCenter.MidPoint.x - (ObsCenter.Width / 2)) <= ObserverCenter.Center.x && (ObsCenter.MidPoint.x + (ObsCenter.Width / 2)) >= ObserverCenter.Center.x)
-                {
-                    if (!IsOver2SideWeight(ObsCenter, TargetCenter, ObserverCenter, out double length))
-                        PathLength=GoVertical(TargetCenter, ObserverCenter);
+                { 
+                    if (!IsOver2SideWidth(ObsCenter, TargetCenter, ObserverCenter, out double length))// Draw if 3 paths, if not draw 2 paths.
+                        PathLength=GoVertical(TargetCenter, ObserverCenter);//draw 2 paths.
                     else
                         PathLength = length;
                 }
@@ -259,6 +290,9 @@ namespace VFD1
                 }) ;
             }
         }
+        /// <summary>
+        /// Draw for verticle line on XY axis. 
+        /// </summary>
         private double GoVertical(VectorDraw.Geometry.Box TargetCenter, VectorDraw.Professional.vdFigures.vdCircle ObserverCenter)
         {
             double val = 0.0;
@@ -268,6 +302,9 @@ namespace VFD1
             val += Math.Abs(Math.Abs(ObserverCenter.Center.y) - Math.Abs(TargetCenter.MidPoint.y));
             return val;
         }
+        /// <summary>
+        /// Draw for horizontal line on XY axis. 
+        /// </summary>
         private double GoHorizontal(VectorDraw.Geometry.Box TargetCenter, VectorDraw.Professional.vdFigures.vdCircle ObserverCenter)
         {
             double val = 0.0;
@@ -277,6 +314,9 @@ namespace VFD1
             val += Math.Abs(Math.Abs(ObserverCenter.Center.x) - Math.Abs(TargetCenter.MidPoint.x));
             return val;
         }
+        /// <summary>
+        /// Draw a line with points (x1,y1), (x2,y2)  on XY axis.
+        /// </summary>
         private void DrawRoute( double x1, double y1, double x2, double y2)
         {
             VectorDraw.Professional.vdFigures.vdLine oneline = new VectorDraw.Professional.vdFigures.vdLine(); 
@@ -291,13 +331,14 @@ namespace VFD1
            
             vdFramedControl1.BaseControl.ActiveDocument.Redraw(true);
         }
-
+        /// <summary>
+        /// Show dimensions of 4 routed path.
+        /// </summary>
         private void button2_Click(object sender, EventArgs e)
         {
             button2.Enabled = false;
             Form2 frm = new Form2(dtInstrument);
-            frm.WindowState = FormWindowState.Normal;
-          
+            frm.WindowState = FormWindowState.Normal; 
             frm.ShowDialog();
         }
 
