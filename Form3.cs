@@ -42,18 +42,18 @@ namespace VFD1
         {
             //VectorDraw.Professional.vdPrimaries.vdBlock obtBlock
             var flayers = vdFramedControl1.BaseControl.ActiveDocument.Layers;
-             lyrInstrument  = new List<VectorDraw.Professional.vdPrimaries.vdLayer>();
-             lyrDestination = new List<VectorDraw.Professional.vdPrimaries.vdLayer>();
-             lyrObstacle    = new List<VectorDraw.Professional.vdPrimaries.vdLayer>();
+            lyrInstrument = new List<VectorDraw.Professional.vdPrimaries.vdLayer>();
+            lyrDestination = new List<VectorDraw.Professional.vdPrimaries.vdLayer>();
+            lyrObstacle = new List<VectorDraw.Professional.vdPrimaries.vdLayer>();
 
 
             List<VectorDraw.Professional.vdFigures.vdCircle> LstObserver = new List<VectorDraw.Professional.vdFigures.vdCircle>();
             List<VectorDraw.Professional.vdFigures.vdPolyline> Target = new List<VectorDraw.Professional.vdFigures.vdPolyline>();
-            List <VectorDraw.Professional.vdFigures.vdPolyline> Obstacle = new List<VectorDraw.Professional.vdFigures.vdPolyline>();
+            List<VectorDraw.Professional.vdFigures.vdPolyline> Obstacle = new List<VectorDraw.Professional.vdFigures.vdPolyline>();
             var allControl = flayers;   // vdFramedControl1.BaseControl.ActiveDocument.ActiveLayOut.Entities.ArrayItems;
             DataTable dtLyrIns = new DataTable();
             dtLyrIns.Columns.Add("colLayer");
-             
+
             foreach (var v in allControl)
             {
                 if (v is VectorDraw.Professional.vdPrimaries.vdLayer lyrCircle)
@@ -61,11 +61,11 @@ namespace VFD1
                     if (lyrCircle.Name.ToLower().Contains("instrument"))
                     {
                         lyrInstrument.Add(lyrCircle);
-                        dtLyrIns.Rows.Add(new object[] { lyrCircle.Name});
+                        dtLyrIns.Rows.Add(new object[] { lyrCircle.Name });
                     }
                     else if (lyrCircle.Name.ToLower().Contains("destination"))
                     {
-                        lyrDestination.Add(lyrCircle); 
+                        lyrDestination.Add(lyrCircle);
                     }
                     else if (lyrCircle.Name.ToLower().Contains("obstacle"))
                     {
@@ -87,12 +87,28 @@ namespace VFD1
 
         private void btnIncre_Click(object sender, EventArgs e)
         {
+            var dgr = dgvAllLayerInstruments.CurrentRow;
+             
+            if (dgr == null)
+                MessageBox.Show("Please select a layer to interact");
+            else
+            {
 
+                string newlyrIns = dgr.Cells[0].Value.ToString();
+                if (!String.IsNullOrEmpty(newlyrIns))
+                {
+
+                    if (!lstInstrument.Items.Contains(newlyrIns))
+                        lstInstrument.Items.Add(newlyrIns);
+                }
+
+            }
         }
 
         private void btnDecre_Click(object sender, EventArgs e)
         {
-
+            if (lstInstrument.Items.Count > 0)
+                lstInstrument.Items.RemoveAt(0);
         }
     }
 }
