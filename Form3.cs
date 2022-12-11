@@ -214,7 +214,12 @@ namespace VFD1
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message);
+                        var msg = "";
+                        if (ex.StackTrace.Contains("bound"))
+                        {
+                            msg = "***Probably Destination polyline should be a closed polygon like obstacle polygons.";
+                        }
+                        MessageBox.Show(ex.Message + Environment.NewLine + msg);
                         return;
                     }
                      
