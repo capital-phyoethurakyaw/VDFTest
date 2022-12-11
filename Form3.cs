@@ -132,13 +132,17 @@ namespace VFD1
             }
             lstInstrument.Refresh();
         }
-
+        private static List<Point> lstPoint; // to remove same coincidence objects
         private void Display() //VectorDraw.Professional.vdPrimaries.vdLayer lyr, bool IsRemoved = false
         {
+            lstPoint = new List<Point>();
             //*** We will be in a big polygonal Obstacle to build route. So, this big one should be neglected 
 
 
-
+            dtInstrument = new DataTable();
+            dtInstrument.Columns.Add("No");
+            dtInstrument.Columns.Add("Instrument");
+            dtInstrument.Columns.Add("Dimension");
             //As usual
             List<VectorDraw.Professional.vdFigures.vdCircle> LstObserverObjects;
             List<VectorDraw.Professional.vdFigures.vdPolyline> TargetObjects;
@@ -179,7 +183,10 @@ namespace VFD1
                     {
                         if (cirCle.Layer.Name.ToLower().Trim() == itm.ToString().ToLower().Trim()) // Much Instrlyer
                         {
-                            LstObserverObjects.Add(cirCle);
+                            if (LstObserverObjects.Where(c=> c.Center == cirCle.Center).ToList().Count == 0 )
+                            {
+                                LstObserverObjects.Add(cirCle);
+                            } 
                         }
                     }
                     else if (v is VectorDraw.Professional.vdFigures.vdPolyline target)
@@ -199,23 +206,21 @@ namespace VFD1
                 //Star Collect btw points
                 foreach (var lst in LstObserverObjects)
                 {
-                    SettingRoute(TargetObjects[0], lst,  ObstaclePolyObjects );
+                    try
+                    {
+               
 
-                    //SettingRoute(TargetObjects[0], lst, ObstacleLineObjects, ObstacleVdInsertObjects);
+                        SettingRoute(TargetObjects[0], lst, ObstaclePolyObjects);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        return;
+                    }
+                     
+                } 
 
-                    // SettingRoute(TargetObjects[0].VertexList.GetBox().MidPoint, lst.Center, ObstacleLineObjects, ObstacleVdInsertObjects);
-                }
-                //ObstacleLineObjects[0].get
-                //  var inr = ObstacleVdInsertObjects[0];
-                //// var d= inr.Block; 
-                //var d=  inr.BoundingBox.GetPoints().GetBox().MidPoint;
-
-            }
-            
-            //    vdFramedControl1.BaseControl.ActiveDocument.Redraw(true);
-            //    vdFramedControl1.BaseControl.Redraw();
-
-            //}
+            } 
 
         }
         //Colect Only inside Points  //List<VectorDraw.Professional.vdFigures.vdLine> ObsLine, List<VectorDraw.Professional.vdFigures.vdInsert> ObsInsert
@@ -294,10 +299,7 @@ namespace VFD1
         private static string DocPath= "";
         private void StartRoute(List<VectorDraw.Professional.vdFigures.vdPolyline> lstObstacles, VectorDraw.Professional.vdFigures.vdPolyline Tar, VectorDraw.Professional.vdFigures.vdCircle Observer)
         {
-            dtInstrument = new DataTable();
-            dtInstrument.Columns.Add("No");
-            dtInstrument.Columns.Add("Instrument");
-            dtInstrument.Columns.Add("Dimension");
+            
            // int i = counter;
 
             List<VectorDraw.Professional.vdFigures.vdCircle> LstObserver = new List<VectorDraw.Professional.vdFigures.vdCircle>();
@@ -307,7 +309,7 @@ namespace VFD1
                 counter++;
                 double PathLength = 0.0;
                 bool IsDrawnPath = false;
-                int PathFlg = 0;  // Chanege to Enum if have time    1 =>IsOver2SideHeight :  2 =>IsOver2SideWidth : 3=>GoHorizontal : 4=> GoVertical
+                int PathFlg = 0;  //    1 =>IsOver2SideHeight :  2 =>IsOver2SideWidth : 3=>GoHorizontal : 4=> GoVertical
              
                 var TargetCenter = Tar.VertexList.GetBox();
                 foreach (var lstObstacle in lstObstacles)
@@ -415,28 +417,7 @@ namespace VFD1
             vdFramedControl1.BaseControl.ActiveDocument.Redraw(true);
         }
         private void btnRouting_Click(object sender, EventArgs e)
-        {
-
-            //Not included in Obstacle Layer
-            //var con = vdFramedControl1.BaseControl.ActiveDocument.Blocks;
-            //foreach (vdBlock blk in con)
-            //{
-            //   if (blk.Document.ActiveLayer.Name.ToLower().Contains("obstacle"))
-            //    { 
-            //    } 
-            //} 
-            //foreach (vdFigure figure in vdFramedControl1.BaseControl.ActiveDocument.Model.Entities)
-            //{
-            //    if (figure is vdInsert)
-            //    {
-            //    var f=    figure.BoundingBox.GetPoints();
-            //        var insert = (vdInsert)figure;
-            //        vdEntities entities = insert.Explode();
-            //        // Console.WriteLine(figure.GetType().ToString() + " " + this.vdScrollableControl1.BaseControl.ActiveDocument.Model.Entities.Count + " " + entities.Count);
-            //        // findEntity(entities, list);
-            //    }
-            //    Console.WriteLine(figure.GetType().ToString());
-            //}
+        { 
             Reset();
             Import(true);
             Display();
