@@ -146,6 +146,7 @@
             this.btnDimension.TabIndex = 52;
             this.btnDimension.Text = "Dimension";
             this.btnDimension.UseVisualStyleBackColor = true;
+            this.btnDimension.Click += new System.EventHandler(this.btnDimension_Click);
             // 
             // dgvAllLayerInstruments
             // 

@@ -22,22 +22,32 @@ namespace VFD1
 
         private void btnImport_Click(object sender, EventArgs e)
         {
-            //openFileDialog1.RestoreDirectory = true; 
-            //openFileDialog1.Filter = "DWG files (*.dwg)|*.dwg*";
-            //openFileDialog1.FilterIndex = 2;
-            //if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            //{  var file = openFileDialog1.FileName;
+            Import();
+         
+            //}
+        }
+        private void Import(bool IsDrivenCode= false)
+        {
+            lyrInstrument = new List<VectorDraw.Professional.vdPrimaries.vdLayer>();
+            lyrDestination = new List<VectorDraw.Professional.vdPrimaries.vdLayer>();
+            lyrObstacle = new List<VectorDraw.Professional.vdPrimaries.vdLayer>();
+            string fname;
+            if (!IsDrivenCode)
+            {
+                object ret = vdFramedControl1.BaseControl.ActiveDocument.GetOpenFileNameDlg(0, "", 0);
+                if (ret == null) return;
 
-            object ret = vdFramedControl1.BaseControl.ActiveDocument.GetOpenFileNameDlg(0, "", 0);
-            if (ret == null) return;
-            string fname = (string)ret;
+                DocPath = ret as string;
+                fname = (string)ret;
+            }
+            else
+              fname = DocPath;
             bool success = vdFramedControl1.BaseControl.ActiveDocument.Open(fname);
             if (success)
             {
                 vdFramedControl1.BaseControl.ActiveDocument.Redraw(true);
                 BindLayer(vdFramedControl1);
             }
-            //}
         }
         List<VectorDraw.Professional.vdPrimaries.vdLayer> lyrInstrument;
         List<VectorDraw.Professional.vdPrimaries.vdLayer> lyrDestination;
@@ -88,7 +98,7 @@ namespace VFD1
 
 
         }
-
+       
         private void btnIncre_Click(object sender, EventArgs e)
         {
             var dgr = dgvAllLayerInstruments.CurrentRow;
@@ -132,10 +142,10 @@ namespace VFD1
             //As usual
             List<VectorDraw.Professional.vdFigures.vdCircle> LstObserverObjects;
             List<VectorDraw.Professional.vdFigures.vdPolyline> TargetObjects;
-
+            List<VectorDraw.Professional.vdFigures.vdPolyline> ObstaclePolyObjects;
             //Only Line, Insert, Polyline include in Obstacle Layer     
-            List<VectorDraw.Professional.vdFigures.vdLine> ObstacleLineObjects;   
-            List<VectorDraw.Professional.vdFigures.vdInsert> ObstacleVdInsertObjects;
+            //List<VectorDraw.Professional.vdFigures.vdLine> ObstacleLineObjects;   
+            //List<VectorDraw.Professional.vdFigures.vdInsert> ObstacleVdInsertObjects;
 
             //Test
             //List<VectorDraw.Professional.vdPrimaries.vdBlock> vdBlocks = new List<VectorDraw.Professional.vdPrimaries.vdBlock>();
@@ -147,8 +157,12 @@ namespace VFD1
             {
                 LstObserverObjects      = new List<VectorDraw.Professional.vdFigures.vdCircle>();
                 TargetObjects           = new List<VectorDraw.Professional.vdFigures.vdPolyline>(); 
-                ObstacleLineObjects     = new List<VectorDraw.Professional.vdFigures.vdLine>();
-                ObstacleVdInsertObjects = new List<VectorDraw.Professional.vdFigures.vdInsert>();
+                ObstaclePolyObjects = new List<VectorDraw.Professional.vdFigures.vdPolyline>();
+
+
+                //Removed from last version
+                //ObstacleLineObjects = new List<VectorDraw.Professional.vdFigures.vdLine>();
+                //ObstacleVdInsertObjects = new List<VectorDraw.Professional.vdFigures.vdInsert>();
 
                 var currentInstument = lyrInstrument.Where(x => x.Name.Equals(itm.ToString())).ToList()[0];
                 var allControl = vdFramedControl1.BaseControl.ActiveDocument.ActiveLayOut.Entities.ArrayItems;
@@ -170,35 +184,24 @@ namespace VFD1
                     }
                     else if (v is VectorDraw.Professional.vdFigures.vdPolyline target)
                     {
-                        if (target.Layer.Name == lyrDestination[0].Name.ToString())  // Only One Destination lyr
+                        if (target.Layer.Name.ToLower().Trim() == lyrDestination[0].Name.ToLower().ToString())  // Only One Destination lyr
                         {
                             TargetObjects.Add(target);
                         }
-                    }
-                    //else if (v.GetType().ToString().ToLower().Contains("block")) // Check Blocks in Obstale
-                    else if ((v is VectorDraw.Professional.vdFigures.vdLine blkType1))
-                    {
-                        if (blkType1.Layer.Name == lyrObstacle[0].Name.ToString())//|| blkType1.Layer.Name != lyrObstacle[0].Name.ToString())
+                        else if (target.Layer.Name.ToLower().ToString() == lyrObstacle[0].Name.ToLower().ToString())
                         {
-                            ObstacleLineObjects.Add(blkType1);
+                            ObstaclePolyObjects.Add(target);
                         }
-
-                    }
-                    else if ((v is VectorDraw.Professional.vdFigures.vdInsert blkType2))
-                    {
-                        if (blkType2.Layer.Name == lyrObstacle[0].Name.ToString())//|| blkType2.Layer.Name != lyrObstacle[0].Name.ToString())
-                        {
-                            ObstacleVdInsertObjects.Add(blkType2);
-                        }
-                    }
-
+                    } 
 
                 }
 
                 //Star Collect btw points
                 foreach (var lst in LstObserverObjects)
                 {
-                    SettingRoute(TargetObjects[0], lst, ObstacleLineObjects, ObstacleVdInsertObjects);
+                    SettingRoute(TargetObjects[0], lst,  ObstaclePolyObjects );
+
+                    //SettingRoute(TargetObjects[0], lst, ObstacleLineObjects, ObstacleVdInsertObjects);
 
                     // SettingRoute(TargetObjects[0].VertexList.GetBox().MidPoint, lst.Center, ObstacleLineObjects, ObstacleVdInsertObjects);
                 }
@@ -215,91 +218,149 @@ namespace VFD1
             //}
 
         }
-        //Colect Only inside Points
-        private void SettingRoute(VectorDraw.Professional.vdFigures.vdPolyline TPoint, VectorDraw.Professional.vdFigures.vdCircle IPoint, List<VectorDraw.Professional.vdFigures.vdLine> ObsLine, List<VectorDraw.Professional.vdFigures.vdInsert> ObsInsert)
-        {
-            List<VectorDraw.Professional.vdFigures.vdLine> ObsLineIn = new List<VectorDraw.Professional.vdFigures.vdLine>(); 
-            foreach (var ol in ObsLine)
-            {
-               if ( ol.getStartPoint().x  > TPoint.VertexList.GetBox().MidPoint.x && ol.getEndPoint().x < IPoint.Center.x  && ol.getStartPoint().y > TPoint.VertexList.GetBox().MidPoint.y && ol.getEndPoint().y < IPoint.Center.y)
-                {
-                    ObsLineIn.Add(ol);
-                }
-            }
-            //foreach (var oi in ObsInsert)
-            //{
-            //    var insss = oi.GetGripPoints();
-            //    var sss = oi.InsertionPoint;
-            //    var dddd= oi.BoundingBox.GetPoints().GetBox().MidPoint;
-            //    //if (oi.poin.x > TPoint.x && ol.getEndPoint().x < IPoint.x && ol.getStartPoint().y > TPoint.y && ol.getEndPoint().y < IPoint.y)
-            //    //{
-            //    //    ObsLineIn.Add(ol);
-            //    //}
-            //}
-            if (ObsLineIn.Count > 0)
-            StartRoute(ObsLineIn, TPoint , IPoint);
-        }
-        private void StartRoute(List<VectorDraw.Professional.vdFigures.vdLine> lstObstacles, VectorDraw.Professional.vdFigures.vdPolyline Tar, VectorDraw.Professional.vdFigures.vdCircle Observer)
+        //Colect Only inside Points  //List<VectorDraw.Professional.vdFigures.vdLine> ObsLine, List<VectorDraw.Professional.vdFigures.vdInsert> ObsInsert
+        private void SettingRoute(VectorDraw.Professional.vdFigures.vdPolyline TPoint, VectorDraw.Professional.vdFigures.vdCircle IPoint, List<VectorDraw.Professional.vdFigures.vdPolyline> ObsPoly )
         {
 
-            // int i = 0;
+            List<VectorDraw.Professional.vdFigures.vdPolyline> ObsPolyIn = new List<VectorDraw.Professional.vdFigures.vdPolyline>(); 
+            foreach (var op in ObsPoly)
+            {
+
+               //if ( (op.VertexList.GetBox().MidPoint.x - (op.VertexList.GetBox().Width/2)) > TPoint.VertexList.GetBox().MidPoint.x && (op.VertexList.GetBox().MidPoint.x + (op.VertexList.GetBox().Width / 2)) < IPoint.Center.x  && ((op.VertexList.GetBox().MidPoint.y - (op.VertexList.GetBox().Height/2)) > TPoint.VertexList.GetBox().MidPoint.y )&& (op.VertexList.GetBox().MidPoint.y + (op.VertexList.GetBox().Height / 2)) < IPoint.Center.y)
+               // {
+                    ObsPolyIn.Add(op);
+                //}
+            }
+            if (ObsPolyIn.Count > 0)
+            StartRoute(ObsPolyIn, TPoint , IPoint);
+        }
+        
+        private bool IsOver2SideHeight(VectorDraw.Geometry.Box ObsCenter, VectorDraw.Geometry.Box TargetCenter, VectorDraw.Professional.vdFigures.vdCircle ObserverCenter,  out double length,bool OnlyCheck = true)
+        {
+            double val = 0.0;
+            //Changed to Target's height Even inside range
+            if ((ObsCenter.MidPoint.y - (ObsCenter.Height / 2)) <= TargetCenter.MidPoint.y && (ObsCenter.MidPoint.y + (ObsCenter.Height / 2)) >= TargetCenter.MidPoint.y && ObserverCenter.Center.x > ObsCenter.MidPoint.x)
+            {
+                //Total would be 3 path 
+                // Get vector distance between points 
+                //eg. To get magnitude value points  (x1,y1), (x2,y2)
+                //    |(x1-x2)| + |(y1-y2)|  
+                //   val        +       val
+
+                if (!OnlyCheck)
+                {
+                    DrawRoute(ObserverCenter.Center.x, ObserverCenter.Center.y, ObserverCenter.Center.x, (ObserverCenter.Center.y + (ObsCenter.Height)));
+                    val += Math.Abs(ObserverCenter.Center.y - (ObserverCenter.Center.y + ObsCenter.Height));
+                    DrawRoute(ObserverCenter.Center.x, (ObserverCenter.Center.y + ObsCenter.Height), TargetCenter.MidPoint.x, (ObserverCenter.Center.y + ObsCenter.Height));
+                    val += Math.Abs(ObserverCenter.Center.x - TargetCenter.MidPoint.x);
+                    DrawRoute(TargetCenter.MidPoint.x, (ObserverCenter.Center.y + ObsCenter.Height), TargetCenter.MidPoint.x, TargetCenter.MidPoint.y);
+                    val += Math.Abs((ObserverCenter.Center.y + ObsCenter.Height) - TargetCenter.MidPoint.y);
+                }
+                length = val;
+                return true;
+            }
+            length = val;
+            return false;
+        }
+   
+        private bool IsOver2SideWidth(VectorDraw.Geometry.Box ObsCenter, VectorDraw.Geometry.Box TargetCenter, VectorDraw.Professional.vdFigures.vdCircle ObserverCenter, out double length, bool OnlyCheck = true)
+        {
+            double val = 0.0;
+            //Changed to Target's width Even inside range
+            if ((ObsCenter.MidPoint.x - (ObsCenter.Width / 2)) <= TargetCenter.MidPoint.x && (ObsCenter.MidPoint.x + (ObsCenter.Width / 2)) >= TargetCenter.MidPoint.x && ObserverCenter.Center.y > ObsCenter.MidPoint.y)
+            {
+                //Total would be 3 path 
+                // Get vector distance between points 
+                //eg. To get magnitude value points  (x1,y1), (x2,y2)
+                //    |(x1-x2)| + |(y1-y2)|  
+                //   val        +       val
+                if (!OnlyCheck)
+                {
+                    DrawRoute(ObserverCenter.Center.x, ObserverCenter.Center.y, (ObserverCenter.Center.x + ObsCenter.Width), ObserverCenter.Center.y);
+                    val += Math.Abs(ObserverCenter.Center.x - (ObserverCenter.Center.x + ObsCenter.Width));
+                    DrawRoute((ObserverCenter.Center.x + ObsCenter.Width), ObserverCenter.Center.y, (ObserverCenter.Center.x + ObsCenter.Width), TargetCenter.MidPoint.y);
+                    val += Math.Abs(ObserverCenter.Center.y - TargetCenter.MidPoint.y);
+                    DrawRoute((ObserverCenter.Center.x + ObsCenter.Width), TargetCenter.MidPoint.y, TargetCenter.MidPoint.x, TargetCenter.MidPoint.y);
+                    val += Math.Abs((ObserverCenter.Center.x + ObsCenter.Width) - TargetCenter.MidPoint.x);
+                }
+                length = val;
+                return true;
+            }
+            length = val;
+            return false;
+        }
+        private  int counter = 0;
+        private static DataTable dtInstrument;
+        private static string DocPath= "";
+        private void StartRoute(List<VectorDraw.Professional.vdFigures.vdPolyline> lstObstacles, VectorDraw.Professional.vdFigures.vdPolyline Tar, VectorDraw.Professional.vdFigures.vdCircle Observer)
+        {
+            dtInstrument = new DataTable();
+            dtInstrument.Columns.Add("No");
+            dtInstrument.Columns.Add("Instrument");
+            dtInstrument.Columns.Add("Dimension");
+           // int i = counter;
 
             List<VectorDraw.Professional.vdFigures.vdCircle> LstObserver = new List<VectorDraw.Professional.vdFigures.vdCircle>();
             LstObserver.Add(Observer);
             foreach (var ObserverCenter in LstObserver)
             {
-                //i++;
+                counter++;
                 double PathLength = 0.0;
-                //Get Center of Destination Target and Obstacle.
+                bool IsDrawnPath = false;
+                int PathFlg = 0;  // Chanege to Enum if have time    1 =>IsOver2SideHeight :  2 =>IsOver2SideWidth : 3=>GoHorizontal : 4=> GoVertical
+             
                 var TargetCenter = Tar.VertexList.GetBox();
-                bool Isvertical = true;
                 foreach (var lstObstacle in lstObstacles)
                 {
-                    var ObsCenter = VectorDraw.Geometry.gPoint.MidPoint(lstObstacle.StartPoint, lstObstacle.EndPoint);// lstObstacle[0].mid; // Obs.VertexList.GetBox();
+                    //Start
+                    //Get Center of Destination Target and Obstacle.
 
-                    double heightobs = 0;
-                    double widthobs = 0;
-                    if (lstObstacle.StartPoint.x == lstObstacle.EndPoint.x)
-                    {
-                        heightobs = 0;
-                    }
-                    else
-                    {
-                        widthobs = lstObstacle.Length();
-                    }
-                    if (lstObstacle.StartPoint.y == lstObstacle.EndPoint.y)
-                    {
-                        widthobs = 0;
-                    }
-                    else
-                    {
-                        heightobs = lstObstacle.Length();
-                    }
+                    var ObsCenter = lstObstacle.VertexList.GetBox();
 
                     //Avoid height Obstacle
                     // Check Obstacle height is inside area of Instrument height
-                    if ((ObsCenter.y - (heightobs / 2)) <= ObserverCenter.Center.y && (ObsCenter.y + (heightobs / 2)) >= ObserverCenter.Center.y)
+                    if ((ObsCenter.MidPoint.y - (ObsCenter.Height / 2)) <= ObserverCenter.Center.y && (ObsCenter.MidPoint.y + (ObsCenter.Height / 2)) >= ObserverCenter.Center.y)
                     {
-                        // if (!IsOver2SideHeight(ObsCenter, TargetCenter, ObserverCenter, out double length))// Draw if 3 paths, if not draw 2 paths.
-                        //  {
-                        Isvertical = false;
-                        //  PathLength = GoHorizontal(TargetCenter, ObserverCenter);//draw 2 paths.
-                        //}
-                        //else
-                        //    PathLength = length;
+                        if (!IsOver2SideHeight(ObsCenter, TargetCenter, ObserverCenter, out double length, false))// Draw if 3 paths, if not draw 2 paths.
+                        {
+                            PathLength =  GoHorizontal(TargetCenter, ObserverCenter);//draw 2 paths. 
+                        }
+                        else
+                            PathLength = length;
+                        IsDrawnPath = true;
                     }
-                    //Avoid Widht Obstacle
-                    // Check Obstacle width is inside area of Instrument width
-                    else if ((ObsCenter.x - (widthobs / 2)) <= ObserverCenter.Center.x && (ObsCenter.x + (widthobs / 2)) >= ObserverCenter.Center.x)
+
+                }
+
+                //Avoid Widht Obstacle
+                // Check Obstacle width is inside area of Instrument width
+
+                //else  
+                if (!IsDrawnPath)
+                    foreach (var lstObstacle in lstObstacles)
                     {
-                        // Isvertical = true;
-                        // if (!IsOver2SideWidth(ObsCenter, TargetCenter, ObserverCenter, out double length))// Draw if 3 paths, if not draw 2 paths.
-                        // PathLength = GoVertical(TargetCenter, ObserverCenter);//draw 2 paths.
+                        //Start
+                        //Get Center of Destination Target and Obstacle.
+
+                        var ObsCenter = lstObstacle.VertexList.GetBox();
                         //else
-                        //    PathLength = length;
+                        if ((ObsCenter.MidPoint.x - (ObsCenter.Width / 2)) <= ObserverCenter.Center.x && (ObsCenter.MidPoint.x + (ObsCenter.Width / 2)) >= ObserverCenter.Center.x)
+                        {
+                            if (!IsOver2SideWidth(ObsCenter, TargetCenter, ObserverCenter, out double length, false))// Draw if 3 paths, if not draw 2 paths.
+                                 PathLength = GoVertical(TargetCenter, ObserverCenter);//draw 2 paths.
+                                
+                            else
+                                  PathLength = length;
+                            IsDrawnPath = true;
+                        }
                     }
-                    else
+                if (!IsDrawnPath)
+                    foreach (var lstObstacle in lstObstacles)
                     {
+                        //Start
+                        //Get Center of Destination Target and Obstacle.
+
+                        var ObsCenter = lstObstacle.VertexList.GetBox();
                         // It is okay to go vertical first or horizontal first. 
                         //But, Make Shortern Priority  
                         //eg if vertical path is shorter => Vertical path > horizontal
@@ -307,48 +368,55 @@ namespace VFD1
                         {
                             //In second route, Check and avoid not to pass through to an obstacle . 
                             //if exist, change route
-                            if ((ObsCenter.y - (heightobs / 2)) <= TargetCenter.MidPoint.y && (ObsCenter.y + (heightobs / 2)) >= TargetCenter.MidPoint.y)
-                            {
-                                //Isvertical = true;  //PathLength = GoVertical(TargetCenter, ObserverCenter);
-                            }
+                            if ((ObsCenter.MidPoint.y - (ObsCenter.Height / 2)) <= TargetCenter.MidPoint.y && (ObsCenter.MidPoint.y + (ObsCenter.Height / 2)) >= TargetCenter.MidPoint.y)
+                                PathLength = GoVertical(TargetCenter, ObserverCenter);
                             else
-                            {
-                                Isvertical = false; // PathLength = GoHorizontal(TargetCenter, ObserverCenter);
-                            }
+                                PathLength = GoHorizontal(TargetCenter, ObserverCenter);
+                        }
+                        else if ((TargetCenter.MidPoint.y - ObserverCenter.Center.y) == (TargetCenter.MidPoint.x - ObserverCenter.Center.x))
+                        {
+                            if ((ObsCenter.MidPoint.y - (ObsCenter.Height / 2)) <= TargetCenter.MidPoint.y && (ObsCenter.MidPoint.y + (ObsCenter.Height / 2)) >= TargetCenter.MidPoint.y)
+                                PathLength = GoHorizontal(TargetCenter, ObserverCenter);
+                            else
+                                PathLength = GoVertical(TargetCenter, ObserverCenter);
                         }
                         else
                         {
                             //In second route, Check and avoid not to pass through to an obstacle . 
                             //if exist, change route
-                            if ((ObsCenter.x - (widthobs / 2)) <= TargetCenter.MidPoint.x && (ObsCenter.x + (widthobs / 2)) >= TargetCenter.MidPoint.x)
+                            if ((ObsCenter.MidPoint.x - (ObsCenter.Width / 2)) <= TargetCenter.MidPoint.x && (ObsCenter.MidPoint.x + (ObsCenter.Width / 2)) >= TargetCenter.MidPoint.x)
+                               PathLength = GoHorizontal(TargetCenter, ObserverCenter);
+                            else
+                                 PathLength = GoVertical(TargetCenter, ObserverCenter);
 
-                                Isvertical = false;  // PathLength = GoHorizontal(TargetCenter, ObserverCenter);
-                            //else
-                            //    PathLength = GoVertical(TargetCenter, ObserverCenter);
                         }
-                    }
-                    if (!Isvertical)
-                        break;
-                }
-                if (!Isvertical)
-                    PathLength = GoHorizontal(TargetCenter, ObserverCenter);
-                else
-                    PathLength = GoVertical(TargetCenter, ObserverCenter);
+                    } ;
 
-                // Set instrument label and put at dtInstrument table 
-                //TextInsert(ObserverCenter.Center.x, ObserverCenter.Center.y, "Instrument" + i.ToString());
-                //dtInstrument.Rows.Add(new object[] {
-                //i , "Instrument" + i.ToString(),  Convert.ToInt32(PathLength).ToString()
-                //});
+                //Set instrument label and put at dtInstrument table
+                TextInsert(ObserverCenter.Center.x, ObserverCenter.Center.y, "Instrument " + counter.ToString());
+                dtInstrument.Rows.Add(new object[] {
+                counter , "Instrument" + counter.ToString(),  Convert.ToInt32(PathLength).ToString()
+                });
             }
         }
         private void lstInstrument_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
-
+        private void TextInsert(double x, double y, string txt)
+        {
+            VectorDraw.Professional.vdFigures.vdText text = new VectorDraw.Professional.vdFigures.vdText();
+            text.SetUnRegisterDocument(vdFramedControl1.BaseControl.ActiveDocument);
+            text.setDocumentDefaults();
+            text.InsertionPoint = new VectorDraw.Geometry.gPoint(x - 40, y - 40);
+            text.TextString = txt;
+            text.Height =45.0;
+            vdFramedControl1.BaseControl.ActiveDocument.ActiveLayOut.Entities.AddItem(text);
+            vdFramedControl1.BaseControl.ActiveDocument.Redraw(true);
+        }
         private void btnRouting_Click(object sender, EventArgs e)
         {
+
             //Not included in Obstacle Layer
             //var con = vdFramedControl1.BaseControl.ActiveDocument.Blocks;
             //foreach (vdBlock blk in con)
@@ -356,23 +424,27 @@ namespace VFD1
             //   if (blk.Document.ActiveLayer.Name.ToLower().Contains("obstacle"))
             //    { 
             //    } 
-            //}
-
-
+            //} 
             //foreach (vdFigure figure in vdFramedControl1.BaseControl.ActiveDocument.Model.Entities)
             //{
-            //    if (figure is  vdInsert)
+            //    if (figure is vdInsert)
             //    {
+            //    var f=    figure.BoundingBox.GetPoints();
             //        var insert = (vdInsert)figure;
             //        vdEntities entities = insert.Explode();
             //        // Console.WriteLine(figure.GetType().ToString() + " " + this.vdScrollableControl1.BaseControl.ActiveDocument.Model.Entities.Count + " " + entities.Count);
-            //       // findEntity(entities, list);
+            //        // findEntity(entities, list);
             //    }
-            //      Console.WriteLine(figure.GetType().ToString());
+            //    Console.WriteLine(figure.GetType().ToString());
             //}
+            Reset();
+            Import(true);
             Display();
         }
-
+        private void Reset()
+        {
+             counter = 0;
+        }
         /// <summary>
         /// Draw for verticle line on XY axis. 
         /// </summary>
@@ -418,6 +490,14 @@ namespace VFD1
             vdFramedControl1.BaseControl.ActiveDocument.ActiveLayOut.ZoomWindow(new VectorDraw.Geometry.gPoint(-100.0, -40.0), new VectorDraw.Geometry.gPoint(140.0, 90.0));
 
             vdFramedControl1.BaseControl.ActiveDocument.Redraw(true);
+        }
+
+        private void btnDimension_Click(object sender, EventArgs e)
+        {
+            button2.Enabled = false;
+            Form2 frm = new Form2(dtInstrument);
+            frm.WindowState = FormWindowState.Normal;
+            frm.ShowDialog();
         }
     }
 }
