@@ -30,14 +30,15 @@
         {
             this.vdFramedControl1 = new vdControls.vdFramedControl();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnImport = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnImport = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
             this.btnRouting = new System.Windows.Forms.Button();
             this.btnDimension = new System.Windows.Forms.Button();
             this.dgvAllLayerInstruments = new System.Windows.Forms.DataGridView();
+            this.collayer = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lstInstrument = new System.Windows.Forms.ListBox();
             this.btnIncre = new System.Windows.Forms.Button();
             this.btnDecre = new System.Windows.Forms.Button();
@@ -47,7 +48,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.collayer = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAllLayerInstruments)).BeginInit();
             this.SuspendLayout();
@@ -81,6 +81,34 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(322, 37);
             this.tableLayoutPanel1.TabIndex = 45;
             // 
+            // btnImport
+            // 
+            this.btnImport.Location = new System.Drawing.Point(3, 3);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(101, 31);
+            this.btnImport.TabIndex = 48;
+            this.btnImport.Text = "Import";
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(217, 3);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(102, 31);
+            this.button3.TabIndex = 50;
+            this.button3.Text = "Info";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(110, 3);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(101, 31);
+            this.button2.TabIndex = 49;
+            this.button2.Text = "Setting";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
             // comboBox1
             // 
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -100,34 +128,6 @@
             this.label1.TabIndex = 47;
             this.label1.Text = "Input Layer";
             // 
-            // btnImport
-            // 
-            this.btnImport.Location = new System.Drawing.Point(3, 3);
-            this.btnImport.Name = "btnImport";
-            this.btnImport.Size = new System.Drawing.Size(101, 31);
-            this.btnImport.TabIndex = 48;
-            this.btnImport.Text = "Import";
-            this.btnImport.UseVisualStyleBackColor = true;
-            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(110, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(101, 31);
-            this.button2.TabIndex = 49;
-            this.button2.Text = "Setting";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(217, 3);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(102, 31);
-            this.button3.TabIndex = 50;
-            this.button3.Text = "Info";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
             // btnRouting
             // 
             this.btnRouting.Location = new System.Drawing.Point(1145, 116);
@@ -136,6 +136,7 @@
             this.btnRouting.TabIndex = 51;
             this.btnRouting.Text = "Routing";
             this.btnRouting.UseVisualStyleBackColor = true;
+            this.btnRouting.Click += new System.EventHandler(this.btnRouting_Click);
             // 
             // btnDimension
             // 
@@ -159,6 +160,15 @@
             this.dgvAllLayerInstruments.Size = new System.Drawing.Size(316, 233);
             this.dgvAllLayerInstruments.TabIndex = 53;
             // 
+            // collayer
+            // 
+            this.collayer.DataPropertyName = "colLayer";
+            this.collayer.HeaderText = "Layer";
+            this.collayer.Name = "collayer";
+            this.collayer.ReadOnly = true;
+            this.collayer.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.collayer.Width = 300;
+            // 
             // lstInstrument
             // 
             this.lstInstrument.FormattingEnabled = true;
@@ -166,6 +176,7 @@
             this.lstInstrument.Name = "lstInstrument";
             this.lstInstrument.Size = new System.Drawing.Size(319, 121);
             this.lstInstrument.TabIndex = 54;
+            this.lstInstrument.SelectedIndexChanged += new System.EventHandler(this.lstInstrument_SelectedIndexChanged);
             // 
             // btnIncre
             // 
@@ -244,15 +255,6 @@
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // collayer
-            // 
-            this.collayer.DataPropertyName = "colLayer";
-            this.collayer.HeaderText = "Layer";
-            this.collayer.Name = "collayer";
-            this.collayer.ReadOnly = true;
-            this.collayer.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.collayer.Width = 300;
             // 
             // Form3
             // 
