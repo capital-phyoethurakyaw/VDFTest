@@ -62,6 +62,7 @@
             this.btc.TabIndex = 8;
             this.btc.Text = "Cable";
             this.btc.UseVisualStyleBackColor = false;
+            this.btc.Click += new System.EventHandler(this.btc_Click);
             // 
             // btcd
             // 
@@ -74,6 +75,7 @@
             this.btcd.TabIndex = 3;
             this.btcd.Text = "Cable Duct";
             this.btcd.UseVisualStyleBackColor = false;
+            this.btcd.Click += new System.EventHandler(this.btcd_Click);
             // 
             // btinst
             // 
@@ -118,7 +120,9 @@
             this.Controls.Add(this.mainpanel1);
             this.Controls.Add(this.sidepanel);
             this.Name = "ProjectInfo";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ProjectInfo";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.ProjectInfo_Load);
             this.sidepanel.ResumeLayout(false);
             this.ResumeLayout(false);

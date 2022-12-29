@@ -1,6 +1,6 @@
 ﻿namespace VFD1.Project
 {
-    partial class IS
+    partial class CL
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
@@ -36,19 +35,9 @@
             this.colClassification1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colClassification2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colClassification3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.groupBox1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1811, 663);
-            this.panel1.TabIndex = 0;
             // 
             // groupBox1
             // 
@@ -59,10 +48,10 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1811, 663);
-            this.groupBox1.TabIndex = 2;
+            this.groupBox1.Size = new System.Drawing.Size(1795, 624);
+            this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "InstrumentList";
+            this.groupBox1.Text = "Cable List";
             // 
             // button1
             // 
@@ -104,35 +93,33 @@
             // colClassification1
             // 
             this.colClassification1.DataPropertyName = "colClassification1";
-            this.colClassification1.HeaderText = "Classification_1";
+            this.colClassification1.HeaderText = "명칭";
             this.colClassification1.Name = "colClassification1";
             this.colClassification1.Width = 560;
             // 
             // colClassification2
             // 
             this.colClassification2.DataPropertyName = "colClassification2";
-            this.colClassification2.HeaderText = "Classification_2";
+            this.colClassification2.HeaderText = "분류";
             this.colClassification2.Name = "colClassification2";
             this.colClassification2.Width = 560;
             // 
             // colClassification3
             // 
             this.colClassification3.DataPropertyName = "colClassification3";
-            this.colClassification3.HeaderText = "Classification_3";
+            this.colClassification3.HeaderText = "외경";
             this.colClassification3.Name = "colClassification3";
             this.colClassification3.Width = 560;
             // 
-            // IS
+            // CL
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1811, 663);
-            this.Controls.Add(this.panel1);
-            this.Cursor = System.Windows.Forms.Cursors.No;
+            this.ClientSize = new System.Drawing.Size(1795, 624);
+            this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "IS";
-            this.Text = "IS";
-            this.panel1.ResumeLayout(false);
+            this.Name = "CL";
+            this.Text = "CL";
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
@@ -141,7 +128,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button btnSave;

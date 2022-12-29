@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Entity\InstrumentListEntity.cs" />
     <Compile Include="Entity\ProjectInfoEntity.cs" />
+    <Compile Include="Entity\staticCache.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +90,18 @@
       <DependentUpon>Form3.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="Project\CDL.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Project\CDL.Designer.cs">
+      <DependentUpon>CDL.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\CL.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Project\CL.Designer.cs">
+      <DependentUpon>CL.cs</DependentUpon>
+    </Compile>
     <Compile Include="Project\IS.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -116,6 +129,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form3.resx">
       <DependentUpon>Form3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\CDL.resx">
+      <DependentUpon>CDL.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\CL.resx">
+      <DependentUpon>CL.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Project\IS.resx">
       <DependentUpon>IS.cs</DependentUpon>

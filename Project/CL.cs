@@ -10,11 +10,11 @@ using System.Windows.Forms;
 
 namespace VFD1.Project
 {
-    public partial class IS : Form
+    public partial class CL : Form
     {
         static string DataSource = Entity.staticCache.DataSource;
 
-        public IS()
+        public CL()
         {
             InitializeComponent();
             this.Load += IS_Load;
@@ -32,7 +32,7 @@ namespace VFD1.Project
             dtSource.Columns.Add("colClassification3");
             using (XLWorkbook workBook = new XLWorkbook(DataSource))
             {
-                var insList = workBook.Worksheet(3);// inslst 
+                var insList = workBook.Worksheet(4);// inslst 
                 bool firstRow = true;
                 foreach (IXLRow row in insList.Rows())
                 {
@@ -68,37 +68,40 @@ namespace VFD1.Project
         {
             using (XLWorkbook workBook = new XLWorkbook(DataSource))
             {
-                var insList = workBook.Worksheet(3);// inslst  
+                var insList = workBook.Worksheet(4);// inslst  
 
                 //DeleteAllFirst
                 bool First = true;
                 foreach (IXLRow row in insList.Rows())
                 {
                     if (!First)
-                    row.Delete();
+                        row.Delete();
                     First = false;
                 }
 
-                    int i = 0;
+                int i = 0;
                 foreach (DataRow dr in dtSource.Rows)
                 {
                     i++;
-                    insList.Cell(i+1, 1).Value = dr["colClassification1"].ToString();
-                    insList.Cell(i+1, 2).Value = dr["colClassification2"].ToString();
-                    insList.Cell(i+1, 3).Value = dr["colClassification3"].ToString(); 
+                    insList.Cell(i + 1, 1).Value = dr["colClassification1"].ToString();
+                    insList.Cell(i + 1, 2).Value = dr["colClassification2"].ToString();
+                    insList.Cell(i + 1, 3).Value = dr["colClassification3"].ToString();
                 }
                 workBook.Save();
             }
             BindGrid();
-        } 
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             try
             {
-                if (dataGridView1.SelectionMode == System.Windows.Forms.DataGridViewSelectionMode.RowHeaderSelect && dataGridView1.SelectedCells.Count ==3)
+                dataGridView1.Update();
 
+                if (dataGridView1.SelectionMode == System.Windows.Forms.DataGridViewSelectionMode.RowHeaderSelect && dataGridView1.SelectedCells.Count == 3)
                 {
-                    DeleteSelectedRow(); 
+                    
+                    DeleteSelectedRow();
+
                     MessageBox.Show("Deleted successfully.");
                 }
             }
@@ -108,15 +111,12 @@ namespace VFD1.Project
             }
         }
         private void DeleteSelectedRow()
-        {
-            if (dataGridView1.SelectedRows.Count > 0 )
-            {
+        { 
                 foreach (DataGridViewRow row in dataGridView1.SelectedRows)
                 {
                     dataGridView1.Rows.Remove(row);
                     dataGridView1.Update();
-                }
-            }
+                } 
 
             SaveChanges();
 

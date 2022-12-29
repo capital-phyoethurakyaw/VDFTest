@@ -12,11 +12,10 @@ namespace VFD1.Project
 {
     public partial class PI : Form
     {
-        static string DataSource = @"D:\Routing.xlsx";
+        static string DataSource = Entity.staticCache.DataSource;
         public PI()
         {
-            InitializeComponent();
-
+            InitializeComponent(); 
         }
 
         private void PI_Load(object sender, EventArgs e)

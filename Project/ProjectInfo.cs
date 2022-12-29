@@ -42,5 +42,15 @@ namespace VFD1.Project
         {
             loadform(new IS());
         }
+
+        private void btc_Click(object sender, EventArgs e)
+        {
+            loadform(new CL());
+        }
+
+        private void btcd_Click(object sender, EventArgs e)
+        {
+            loadform(new CDL());
+        }
     }
 }
