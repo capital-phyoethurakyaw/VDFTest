@@ -485,5 +485,10 @@ namespace VFD1
             frm.WindowState = FormWindowState.Normal;
             frm.ShowDialog();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

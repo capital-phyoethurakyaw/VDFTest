@@ -97,7 +97,7 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(102, 31);
             this.button3.TabIndex = 50;
-            this.button3.Text = "Info";
+            this.button3.Text = "Setting";
             this.button3.UseVisualStyleBackColor = true;
             // 
             // button2
@@ -106,8 +106,9 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(101, 31);
             this.button2.TabIndex = 49;
-            this.button2.Text = "Setting";
+            this.button2.Text = "ProjectInfo";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // comboBox1
             // 
