@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace VFD1.Project
 {
@@ -24,6 +25,11 @@ namespace VFD1.Project
         }
         private void SetSetting()
         {
+            if ( !File.Exists(DataSource))
+            {
+                MessageBox.Show("Please make and configure a setting to initialize dbsource file having path " + DataSource +"." + Environment.NewLine + "Source File have been put at Project's Datasource Folder.");
+                return;
+            }
             using (XLWorkbook workBook = new XLWorkbook(DataSource))
             {
                 var comboList = workBook.Worksheet(1);

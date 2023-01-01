@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -26,6 +27,11 @@ namespace VFD1.Project
         }
         private void BindGrid()
         {
+            if (!File.Exists(DataSource))
+            {
+                MessageBox.Show("Please make and configure a setting to initialize dbsource file having path " + DataSource + "." + Environment.NewLine + "Source File have been put at Project's Datasource Folder.");
+                return;
+            }
             dtSource = new DataTable();
             dtSource.Columns.Add("colClassification1");
             dtSource.Columns.Add("colClassification2");

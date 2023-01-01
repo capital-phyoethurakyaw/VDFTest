@@ -358,10 +358,10 @@ namespace VFD1
         /// </summary>
         private void button2_Click(object sender, EventArgs e)
         {
-            button2.Enabled = false;
-            Form2 frm = new Form2(dtInstrument);
-            frm.WindowState = FormWindowState.Normal; 
-            frm.ShowDialog();
+            //button2.Enabled = false;
+            //Project.ProjectInfo frm = new Project.ProjectInfo();
+            //frm.WindowState = FormWindowState.Normal; 
+            //frm.ShowDialog();
         }
 
         private static DataTable dtInstrument;

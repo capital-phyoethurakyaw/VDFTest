@@ -15,7 +15,7 @@ namespace VFD1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Project.ProjectInfo());
+            Application.Run(new Form4());
         }
     }
 }

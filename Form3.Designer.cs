@@ -31,7 +31,6 @@
             this.vdFramedControl1 = new vdControls.vdFramedControl();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.btnImport = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -48,6 +47,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.button1 = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAllLayerInstruments)).BeginInit();
             this.SuspendLayout();
@@ -72,7 +72,6 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel1.Controls.Add(this.btnImport, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.button3, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.button2, 1, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(1142, 12);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -91,22 +90,13 @@
             this.btnImport.UseVisualStyleBackColor = true;
             this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(217, 3);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(102, 31);
-            this.button3.TabIndex = 50;
-            this.button3.Text = "Setting";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(110, 3);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(101, 31);
             this.button2.TabIndex = 49;
-            this.button2.Text = "ProjectInfo";
+            this.button2.Text = "Project";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -258,11 +248,22 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(1359, 116);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(101, 34);
+            this.button1.TabIndex = 64;
+            this.button1.Text = "Explode";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1476, 736);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -280,6 +281,7 @@
             this.Controls.Add(this.vdFramedControl1);
             this.Name = "Form3";
             this.Text = "Form3";
+            this.Load += new System.EventHandler(this.Form3_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvAllLayerInstruments)).EndInit();
             this.ResumeLayout(false);
@@ -292,7 +294,6 @@
         private vdControls.vdFramedControl vdFramedControl1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button btnImport;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label1;
@@ -309,5 +310,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.DataGridViewTextBoxColumn collayer;
+        private System.Windows.Forms.Button button1;
     }
 }
