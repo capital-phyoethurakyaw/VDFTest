@@ -167,6 +167,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="app.config" />
+    <None Include="DataSource\ptk_all_blocksRef.dwg" />
+    <None Include="DataSource\ptk_all_multi_blocksRef.dwg" />
+    <None Include="DataSource\ptk_all_polylines_simple.dwg" />
+    <None Include="DataSource\Routing.xlsx" />
     <None Include="Documents\vdf_flow.xlsx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -200,7 +204,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataResource\" />
-    <Folder Include="DataSource\" />
     <Folder Include="MainForm\" />
     <Folder Include="Setting\" />
   </ItemGroup>
