@@ -324,8 +324,6 @@ OpenCover/
 # Azure Stream Analytics local run output
 ASALocalRun/
 
-DataSource/
-
 *.dwg
 !DataSource/*.dwg
 
