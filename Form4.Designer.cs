@@ -475,7 +475,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Name = "Form4";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form4";
+            this.Text = "D-Routing Optimizer";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form4_Load);
             this.splitContainer2.Panel1.ResumeLayout(false);
