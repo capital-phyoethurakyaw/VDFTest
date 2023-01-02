@@ -1,4 +1,5 @@
-﻿using ClosedXML.Excel;
+﻿//using ClosedXML.Excel;
+using CsvHelper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +14,7 @@ namespace VFD1.Project
 {
     public partial class CL : Form
     {
-        static string DataSource = Entity.staticCache.DataSource;
+        static string DataSourceCableList = Entity.staticCache.DataSourceCableList;
 
         public CL()
         {
@@ -27,31 +28,31 @@ namespace VFD1.Project
         }
         private void BindGrid()
         {
-            if (!File.Exists(DataSource))
+            if (!File.Exists(DataSourceCableList))
             {
-                MessageBox.Show("Please make and configure a setting to initialize dbsource file having path " + DataSource + "." + Environment.NewLine + "Source File have been put at Project's Datasource Folder.");
+                MessageBox.Show("Please make and configure a setting to initialize dbsource file having path " + DataSourceCableList + "." + Environment.NewLine + "Source File have been put at Project's Datasource Folder.");
                 return;
             }
             dtSource = new DataTable();
             dtSource.Columns.Add("colClassification1");
             dtSource.Columns.Add("colClassification2");
             dtSource.Columns.Add("colClassification3");
-            using (XLWorkbook workBook = new XLWorkbook(DataSource))
+        
+            List<CableList> result;
+            using (TextReader fileReader = File.OpenText(DataSourceCableList))
             {
-                var insList = workBook.Worksheet(4);// inslst 
-                bool firstRow = true;
-                foreach (IXLRow row in insList.Rows())
-                {
-                    if (!firstRow)
-                    {
-                        var val1 = row.Cell(1).Value.ToString();
-                        var val2 = row.Cell(2).Value.ToString();
-                        var val3 = row.Cell(3).Value.ToString();
-                        if (!string.IsNullOrEmpty(val1.TrimEnd()) || !string.IsNullOrEmpty(val2.TrimEnd()) || !string.IsNullOrEmpty(val3.TrimEnd()))
-                            dtSource.Rows.Add(new object[] { val1, val2, val3 });
-                    }
-                    firstRow = false;
-                }
+                var csv = new CsvReader(fileReader);
+                csv.Configuration.HasHeaderRecord = false;
+                csv.Read();
+                result = csv.GetRecords<CableList>().ToList();
+
+            }
+            int i = 0;
+            foreach (CableList cbe in result)
+            {
+           
+                    dtSource.Rows.Add(new object[] { cbe.명칭.Trim(), cbe.분류.Trim(), cbe.외경.Trim() });
+               
             }
             dataGridView1.DataSource = dtSource;
 
@@ -71,29 +72,27 @@ namespace VFD1.Project
             }
         }
         private void SaveChanges()
-        {
-            using (XLWorkbook workBook = new XLWorkbook(DataSource))
-            {
-                var insList = workBook.Worksheet(4);// inslst  
+        { 
+            File.Delete(DataSourceCableList);
+            using (var writer = new StreamWriter(DataSourceCableList))
+            using (var csvWriter = new CsvWriter(writer))
+            { 
+                List<CableList> lst = new List<CableList>();
+                CableList ie = new CableList();
 
-                //DeleteAllFirst
-                bool First = true;
-                foreach (IXLRow row in insList.Rows())
-                {
-                    if (!First)
-                        row.Delete();
-                    First = false;
-                }
-
-                int i = 0;
                 foreach (DataRow dr in dtSource.Rows)
                 {
-                    i++;
-                    insList.Cell(i + 1, 1).Value = dr["colClassification1"].ToString();
-                    insList.Cell(i + 1, 2).Value = dr["colClassification2"].ToString();
-                    insList.Cell(i + 1, 3).Value = dr["colClassification3"].ToString();
+                    ie = new CableList();
+                    ie.명칭 = dr["colClassification1"].ToString().Trim();
+                    ie.분류 = dr["colClassification2"].ToString().Trim();
+                    ie.외경 = dr["colClassification3"].ToString().Trim();
+                    lst.Add(ie);
+
                 }
-                workBook.Save();
+                csvWriter.WriteRecords(lst);
+                csvWriter.Flush();
+                writer.Flush();
+                writer.Close();
             }
             BindGrid();
         }
@@ -128,5 +127,12 @@ namespace VFD1.Project
 
 
         }
+    }
+    public class CableList
+    {
+        public string 명칭 { get; set; }
+        public string 분류 { get; set; }
+        public string 외경 { get; set; }
+
     }
 }

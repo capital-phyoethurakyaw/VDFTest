@@ -1,4 +1,5 @@
-﻿using ClosedXML.Excel;
+﻿//using ClosedXML.Excel;
+using CsvHelper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +14,7 @@ namespace VFD1.Project
 {
     public partial class CDL : Form
     {
-        static string DataSource = Entity.staticCache.DataSource;
+        static string DataSourceCableDuctList = Entity.staticCache.DataSourceCableDuctList;
 
         public CDL()
         {
@@ -27,9 +28,9 @@ namespace VFD1.Project
         }
         private void BindGrid()
         {
-            if (!File.Exists(DataSource))
+            if (!File.Exists(DataSourceCableDuctList))
             {
-                MessageBox.Show("Please make and configure a setting to initialize dbsource file having path " + DataSource + "." + Environment.NewLine + "Source File have been put at Project's Datasource Folder.");
+                MessageBox.Show("Please make and configure a setting to initialize dbsource file having path " + DataSourceCableDuctList + "." + Environment.NewLine + "Source File have been put at Project's Datasource Folder.");
                 return;
             }
             dtSource = new DataTable();
@@ -37,26 +38,19 @@ namespace VFD1.Project
             dtSource.Columns.Add("colClassification2");
             dtSource.Columns.Add("colClassification3");
             dtSource.Columns.Add("colClassification4");
-            using (XLWorkbook workBook = new XLWorkbook(DataSource))
+            List<CableDuctList> result;
+            using (TextReader fileReader = File.OpenText(DataSourceCableDuctList))
             {
-                var insList = workBook.Worksheet(5);// cdlist 
-                bool firstRow = true;
-                foreach (IXLRow row in insList.Rows())
-                {
-                    if (!firstRow)
-                    {
-                        var val1 = row.Cell(1).Value.ToString();
-                        var val2 = row.Cell(2).Value.ToString();
-                        var val3 = row.Cell(3).Value.ToString();
-                        var val4 = row.Cell(4).Value.ToString();
-                        if (!string.IsNullOrEmpty(val1.TrimEnd()) || !string.IsNullOrEmpty(val2.TrimEnd()) || !string.IsNullOrEmpty(val3.TrimEnd()) || !string.IsNullOrEmpty(val4.TrimEnd()))
-                            dtSource.Rows.Add(new object[] { val1, val2, val3, val4 });
-                    }
-                    firstRow = false;
-                }
-            }
-            dataGridView1.DataSource = dtSource;
-
+                var csv = new CsvReader(fileReader);
+                csv.Configuration.HasHeaderRecord = false;
+                csv.Read();
+                result = csv.GetRecords<CableDuctList>().ToList(); 
+            } 
+            foreach (CableDuctList cbe in result)
+            {
+                dtSource.Rows.Add(new object[] { cbe.Category.Trim(), cbe.Type.Trim(), cbe.Width.Trim(), cbe.Height.Trim() });
+            } 
+            dataGridView1.DataSource = dtSource; 
         }
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -73,30 +67,27 @@ namespace VFD1.Project
             }
         }
         private void SaveChanges()
-        {
-            using (XLWorkbook workBook = new XLWorkbook(DataSource))
-            {
-                var insList = workBook.Worksheet(5);// inslst  
+        { 
+            File.Delete(DataSourceCableDuctList);
+            using (var writer = new StreamWriter(DataSourceCableDuctList))
+            using (var csvWriter = new CsvWriter(writer))
+            { 
+                List<CableDuctList> lst = new List<CableDuctList>();
+                CableDuctList ie = new CableDuctList();
 
-                //DeleteAllFirst
-                bool First = true;
-                foreach (IXLRow row in insList.Rows())
-                {
-                    if (!First)
-                        row.Delete();
-                    First = false;
-                }
-
-                int i = 0;
                 foreach (DataRow dr in dtSource.Rows)
                 {
-                    i++;
-                    insList.Cell(i + 1, 1).Value = dr["colClassification1"].ToString();
-                    insList.Cell(i + 1, 2).Value = dr["colClassification2"].ToString();
-                    insList.Cell(i + 1, 3).Value = dr["colClassification3"].ToString();
-                    insList.Cell(i + 1, 4).Value = dr["colClassification4"].ToString();
+                    ie = new CableDuctList();
+                    ie.Category = dr["colClassification1"].ToString().Trim();
+                    ie.Type = dr["colClassification2"].ToString().Trim();
+                    ie.Width = dr["colClassification3"].ToString().Trim();
+                    ie.Height = dr["colClassification3"].ToString().Trim();
+                    lst.Add(ie); 
                 }
-                workBook.Save();
+                csvWriter.WriteRecords(lst);
+                csvWriter.Flush();
+                writer.Flush();
+                writer.Close();
             }
             BindGrid();
         }
@@ -108,9 +99,7 @@ namespace VFD1.Project
 
                 if (dataGridView1.SelectionMode == System.Windows.Forms.DataGridViewSelectionMode.RowHeaderSelect && dataGridView1.SelectedCells.Count == 4)
                 {
-
                     DeleteSelectedRow();
-
                     MessageBox.Show("Deleted successfully.");
                 }
             }
@@ -131,5 +120,14 @@ namespace VFD1.Project
 
 
         }
+    }
+    public class CableDuctList
+    {
+        public string Category { get; set; }
+        public string Type { get; set; }
+        public string Width { get; set; }
+        public string Height { get; set; }
+        //Category	Type	Width	Height
+
     }
 }

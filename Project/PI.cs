@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+﻿//using ClosedXML.Excel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,12 +8,16 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using CsvHelper;
+using System.Globalization;
+using CsvHelper.Configuration;
 
 namespace VFD1.Project
 {
     public partial class PI : Form
     {
-        static string DataSource = Entity.staticCache.DataSource;
+        static string DataSourceComboSetting = Entity.staticCache.DataSourceComboSetting;
+        static string DataSourceProjectList = Entity.staticCache.DataSourceProjectList;
         public PI()
         {
             InitializeComponent(); 
@@ -23,89 +27,124 @@ namespace VFD1.Project
         {
             SetSetting();
         }
+                DataTable dtNation = new DataTable();   
+                DataTable dtSite    = new DataTable();  
+                DataTable dtLine    = new DataTable();  
+                DataTable dtPhase    = new DataTable(); 
+                DataTable dtScope   = new DataTable();  
+                DataTable dtConPhase = new DataTable(); 
+                DataTable dtDeli1 = new DataTable();    
+                DataTable dtDeli2 = new DataTable();
         private void SetSetting()
         {
-            if ( !File.Exists(DataSource))
+            if (!File.Exists(DataSourceComboSetting) || !File.Exists(DataSourceProjectList))
             {
-                MessageBox.Show("Please make and configure a setting to initialize dbsource file having path " + DataSource +"." + Environment.NewLine + "Source File have been put at Project's Datasource Folder.");
+                MessageBox.Show("Please make and configure a setting to initialize dbsource file having path " + DataSourceComboSetting + " & " + DataSourceProjectList + "." + Environment.NewLine + "Source File have been put at Project's Datasource Folder.");
                 return;
             }
-            using (XLWorkbook workBook = new XLWorkbook(DataSource))
+            dtNation.Columns.Add("ID"); dtNation.Columns.Add("Value");
+            dtSite.Columns.Add("ID"); dtSite.Columns.Add("Value");
+            dtLine.Columns.Add("ID"); dtLine.Columns.Add("Value");
+            dtPhase.Columns.Add("ID"); dtPhase.Columns.Add("Value");
+            dtScope.Columns.Add("ID"); dtScope.Columns.Add("Value");
+            dtConPhase.Columns.Add("ID"); dtConPhase.Columns.Add("Value");
+            dtDeli1.Columns.Add("ID"); dtDeli1.Columns.Add("Value");
+            dtDeli2.Columns.Add("ID"); dtDeli2.Columns.Add("Value");
+
+
+            MakeSettingCombo();
+            cboNation.ValueMember = "ID";
+            cboNation.DisplayMember = "Value";
+            cboNation.DataSource = dtNation;
+
+            cboSite.ValueMember = "ID";
+            cboSite.DisplayMember = "Value";
+            cboSite.DataSource = dtSite;
+
+            cboLine.ValueMember = "ID";
+            cboLine.DisplayMember = "Value";
+            cboLine.DataSource = dtLine;
+
+            cboPhrase.ValueMember = "ID";
+            cboPhrase.DisplayMember = "Value";
+            cboPhrase.DataSource = dtPhase;
+
+            cboScope.ValueMember = "ID";
+            cboScope.DisplayMember = "Value";
+            cboScope.DataSource = dtScope;
+
+            cboConPhrase.ValueMember = "ID";
+            cboConPhrase.DisplayMember = "Value";
+            cboConPhrase.DataSource = dtConPhase;
+
+            cboDeli1.ValueMember = "ID";
+            cboDeli1.DisplayMember = "Value";
+            cboDeli1.DataSource = dtDeli1;
+
+            cboDeli2.ValueMember = "ID";
+            cboDeli2.DisplayMember = "Value";
+            cboDeli2.DataSource = dtDeli2; 
+        }
+
+        private void MakeSettingCombo()
+        { 
+            List<ComboSetting> result; 
+            using (TextReader fileReader = File.OpenText(DataSourceComboSetting))
             {
-                var comboList = workBook.Worksheet(1);
-                DataTable dtNation = new DataTable(); dtNation.Columns.Add("ID"); dtNation.Columns.Add("Value");
-                DataTable dtSite = new DataTable(); dtSite.Columns.Add("ID"); dtSite.Columns.Add("Value");
-                DataTable dtLine = new DataTable(); dtLine.Columns.Add("ID"); dtLine.Columns.Add("Value");
-                DataTable dtPhase = new DataTable(); dtPhase.Columns.Add("ID"); dtPhase.Columns.Add("Value");
-                DataTable dtScope = new DataTable(); dtScope.Columns.Add("ID"); dtScope.Columns.Add("Value");
-                DataTable dtConPhase = new DataTable(); dtConPhase.Columns.Add("ID"); dtConPhase.Columns.Add("Value");
-                DataTable dtDeli1 = new DataTable(); dtDeli1.Columns.Add("ID"); dtDeli1.Columns.Add("Value");
-                DataTable dtDeli2 = new DataTable(); dtDeli2.Columns.Add("ID"); dtDeli2.Columns.Add("Value");
-                //Loop through the Worksheet rows.
-
-                foreach (IXLColumn col in comboList.Columns())
-                {
-                    bool firstRow = true;
-                    int i = 0;
-                    foreach (IXLCell cell in col.Cells())
+                var csv = new CsvReader(fileReader);
+                csv.Configuration.HasHeaderRecord = false;
+                csv.Read();
+                result = csv.GetRecords<ComboSetting>().ToList();
+            }
+            int i = 0;
+            foreach (ComboSetting cbe in result)
+            {
+                i++;
+                //if (i != 0)
+                //{
+                if (!String.IsNullOrEmpty(cbe.Nation.Trim()))
                     {
-                        if (!firstRow)
-                        {
-                            i++;//Nation	Site	Line	Phase	Scope	ConstuctionPhase	Deliverable1	Deliverable2
-
-                            if (col.FirstCell().Value.ToString() == "Nation" && !string.IsNullOrEmpty(cell.Value.ToString().Trim()))
-                                dtNation.Rows.Add(new object[] { i.ToString(), cell.Value.ToString() });
-                            else if (col.FirstCell().Value.ToString() == "Site" && !string.IsNullOrEmpty(cell.Value.ToString().Trim()))
-                                dtSite.Rows.Add(new object[] { i.ToString(), cell.Value.ToString() });
-                            else if (col.FirstCell().Value.ToString() == "Line" && !string.IsNullOrEmpty(cell.Value.ToString().Trim()))
-                                dtLine.Rows.Add(new object[] { i.ToString(), cell.Value.ToString() });
-                            else if (col.FirstCell().Value.ToString() == "Phase" && !string.IsNullOrEmpty(cell.Value.ToString().Trim()))
-                                dtPhase.Rows.Add(new object[] { i.ToString(), cell.Value.ToString() });
-                            else if (col.FirstCell().Value.ToString() == "Scope" && !string.IsNullOrEmpty(cell.Value.ToString().Trim()))
-                                dtScope.Rows.Add(new object[] { i.ToString(), cell.Value.ToString() });
-                            else if (col.FirstCell().Value.ToString() == "ConstuctionPhase" && !string.IsNullOrEmpty(cell.Value.ToString().Trim()))
-                                dtConPhase.Rows.Add(new object[] { i.ToString(), cell.Value.ToString() });
-                            else if (col.FirstCell().Value.ToString() == "Deliverable1" && !string.IsNullOrEmpty(cell.Value.ToString().Trim()))
-                                dtDeli1.Rows.Add(new object[] { i.ToString(), cell.Value.ToString() });
-                            else if (col.FirstCell().Value.ToString() == "Deliverable2" && !string.IsNullOrEmpty(cell.Value.ToString().Trim()))
-                                dtDeli2.Rows.Add(new object[] { i.ToString(), cell.Value.ToString() });
-                        }
-                        firstRow = false;
+                        
+                        dtNation.Rows.Add(new object[] { i.ToString(), cbe.Nation.Trim() });
                     }
+                    if (!String.IsNullOrEmpty(cbe.Nation.Trim()))
+                    {
+                        
+                        dtSite.Rows.Add(new object[] { i.ToString(), cbe.Site.Trim() });
+                    }
+                    if (!String.IsNullOrEmpty(cbe.Line.Trim()))
+                    {
+                        
+                        dtLine.Rows.Add(new object[] { i.ToString(), cbe.Line.Trim() });
+                    }
+                    if (!String.IsNullOrEmpty(cbe.Phase.Trim()))
+                    {
+                        
+                        dtPhase.Rows.Add(new object[] { i.ToString(), cbe.Phase.Trim() });
+                    }
+                    if (!String.IsNullOrEmpty(cbe.Scope.Trim()))
+                    {
+                        
+                        dtScope.Rows.Add(new object[] { i.ToString(), cbe.Scope.Trim() });
+                    }
+                    if (!String.IsNullOrEmpty(cbe.ConstuctionPhase.Trim()))
+                    {
+                        
+                        dtConPhase.Rows.Add(new object[] { i.ToString(), cbe.ConstuctionPhase.Trim() });
+                    }
+                    if (!String.IsNullOrEmpty(cbe.Deliverable1.Trim()))
+                    {
+                        
+                        dtDeli1.Rows.Add(new object[] { i.ToString(), cbe.Deliverable1.Trim() });
+                    }
+                    if (!String.IsNullOrEmpty(cbe.Deliverable2.Trim()))
+                    {
+                        
+                        dtDeli2.Rows.Add(new object[] { i.ToString(), cbe.Deliverable2.Trim() });
+                    }
+                //}
+               
 
-
-                }
-                cboNation.ValueMember = "ID";
-                cboNation.DisplayMember = "Value";
-                cboNation.DataSource = dtNation;
-
-                cboSite.ValueMember = "ID";
-                cboSite.DisplayMember = "Value";
-                cboSite.DataSource = dtSite;
-
-                cboLine.ValueMember = "ID";
-                cboLine.DisplayMember = "Value";
-                cboLine.DataSource = dtLine;
-
-                cboPhrase.ValueMember = "ID";
-                cboPhrase.DisplayMember = "Value";
-                cboPhrase.DataSource = dtPhase;
-
-                cboScope.ValueMember = "ID";
-                cboScope.DisplayMember = "Value";
-                cboScope.DataSource = dtScope;
-
-                cboConPhrase.ValueMember = "ID";
-                cboConPhrase.DisplayMember = "Value";
-                cboConPhrase.DataSource = dtConPhase;
-
-                cboDeli1.ValueMember = "ID";
-                cboDeli1.DisplayMember = "Value";
-                cboDeli1.DataSource = dtDeli1;
-
-                cboDeli2.ValueMember = "ID";
-                cboDeli2.DisplayMember = "Value";
-                cboDeli2.DataSource = dtDeli2;
             }
         }
         private bool ErrorCheck()
@@ -129,8 +168,7 @@ namespace VFD1.Project
                         ctrlTxt.Focus();
                         return true;
                     }
-                }
-                //ctrlTxt.isClosing = true;
+                } 
             }
             return false;
         }
@@ -170,32 +208,29 @@ namespace VFD1.Project
                 Password = txtPwd.Text
 
             };
+
             try
             {
-                using (XLWorkbook workBook = new XLWorkbook(DataSource))
-                {
-                    var pjlist = workBook.Worksheet(2);// PjLst 
-                    var lastRow = pjlist.RowsUsed().Count() + 1;
-                    pjlist.Cell(lastRow, 1).Value = lastRow - 1;
-                    pjlist.Cell(lastRow, 2).Value = pet.Nation;
-                    pjlist.Cell(lastRow, 3).Value = pet.Site;
-                    pjlist.Cell(lastRow, 4).Value = pet.ProjectTitle;
-                    pjlist.Cell(lastRow, 5).Value = pet.ProjectSubTitle;
-                    pjlist.Cell(lastRow, 6).Value = pet.Line;
-                    pjlist.Cell(lastRow, 7).Value = pet.Phase;
-                    pjlist.Cell(lastRow, 8).Value = pet.Scope;
-                    pjlist.Cell(lastRow, 9).Value = pet.ConstrutionPhase;
-                    pjlist.Cell(lastRow, 10).Value = pet.RevNo;
-                    pjlist.Cell(lastRow, 11).Value = pet.Deliverable1;
-                    pjlist.Cell(lastRow, 12).Value = pet.Deliverable2;
-                    pjlist.Cell(lastRow, 13).Value = pet.Assign1;
-                    pjlist.Cell(lastRow, 14).Value = pet.Assign2;
-                    pjlist.Cell(lastRow, 15).Value = pet.Password;
 
-                    workBook.Save();
-                    MessageBox.Show("Project information was saved successfully!");
-                    ResetValues();
+                List<Entity.ProjectInfoEntity> result;
+                using (TextReader fileReader = File.OpenText(DataSourceProjectList))
+                {
+                    var csv = new CsvReader(fileReader);
+                    csv.Configuration.HasHeaderRecord = false;
+                    csv.Read();
+                    result = csv.GetRecords<Entity.ProjectInfoEntity>().ToList();
                 }
+                File.Delete(DataSourceProjectList);
+                var fs = new StreamWriter(DataSourceProjectList);
+                var csvWriter = new CsvWriter(fs);  
+                result.Add(pet);
+
+                csvWriter.WriteRecords( result); 
+                csvWriter.Flush();
+                fs.Flush();
+                fs.Close();
+                MessageBox.Show("Project information was saved successfully!");
+                ResetValues();
             }
             catch (Exception ex)
             {
@@ -210,5 +245,18 @@ namespace VFD1.Project
                     (ctrl as TextBox).Text = ""; 
             }
         }
+    }
+    public class ComboSetting
+    {
+        //Nation	Site	Line	Phase	Scope	ConstuctionPhase	Deliverable1	Deliverable2
+
+        public string Nation { get; set; }
+        public string Site { get; set; }
+        public string Line { get; set; }
+        public string Phase { get; set; }
+        public string Scope { get; set; }
+        public string ConstuctionPhase { get; set; }
+        public string Deliverable1 { get; set; }
+        public string Deliverable2 { get; set; }
     }
 }

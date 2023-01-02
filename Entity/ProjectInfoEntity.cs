@@ -7,7 +7,8 @@ namespace VFD1.Entity
 {
    public class ProjectInfoEntity
     {
-         public string Nation { get; set; }
+        //public string ID { get; set; } 
+        public string Nation { get; set; }
          public string Site { get; set; }
          public string ProjectTitle { get; set; }
          public string ProjectSubTitle { get; set; }

@@ -1,9 +1,11 @@
-﻿using ClosedXML.Excel;
+﻿//using ClosedXML.Excel;
+using CsvHelper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,7 +15,7 @@ namespace VFD1.Project
 {
     public partial class IS : Form
     {
-        static string DataSource = Entity.staticCache.DataSource;
+        static string DataSourceInstrumentList = Entity.staticCache.DataSourceInstrumentList;
 
         public IS()
         {
@@ -27,33 +29,32 @@ namespace VFD1.Project
         }
         private void BindGrid()
         {
-            if (!File.Exists(DataSource))
+            if (!File.Exists(DataSourceInstrumentList))
             {
-                MessageBox.Show("Please make and configure a setting to initialize dbsource file having path " + DataSource + "." + Environment.NewLine + "Source File have been put at Project's Datasource Folder.");
+                MessageBox.Show("Please make and configure a setting to initialize dbsource file having path " + DataSourceInstrumentList + "." + Environment.NewLine + "Source File have been put at Project's Datasource Folder.");
                 return;
             }
             dtSource = new DataTable();
             dtSource.Columns.Add("colClassification1");
             dtSource.Columns.Add("colClassification2");
-            dtSource.Columns.Add("colClassification3");
-            using (XLWorkbook workBook = new XLWorkbook(DataSource))
+            dtSource.Columns.Add("colClassification3"); 
+            List<InstrumentList> result;
+            using (TextReader fileReader = File.OpenText(DataSourceInstrumentList))
             {
-                var insList = workBook.Worksheet(3);// inslst 
-                bool firstRow = true;
-                foreach (IXLRow row in insList.Rows())
-                {
-                    if (!firstRow)
-                    {
-                        var val1 = row.Cell(1).Value.ToString();
-                        var val2 = row.Cell(2).Value.ToString();
-                        var val3 = row.Cell(3).Value.ToString();
-                        if (!string.IsNullOrEmpty(val1.TrimEnd()) || !string.IsNullOrEmpty(val2.TrimEnd()) || !string.IsNullOrEmpty(val3.TrimEnd()))
-                            dtSource.Rows.Add(new object[] { val1, val2, val3 });
-                    }
-                    firstRow = false;
-                }
+                var csv = new CsvReader(fileReader);
+                csv.Configuration.HasHeaderRecord = false;
+                csv.Read();
+                result = csv.GetRecords<InstrumentList>().ToList();
+               
             }
-            dataGridView1.DataSource = dtSource;
+            int i = 0;
+            foreach (InstrumentList cbe in result)
+            { 
+                    dtSource.Rows.Add(new object[] { cbe.Classification_1.Trim(), cbe.Classification_2.Trim(), cbe.Classification_3.Trim() });
+           
+            }
+
+                dataGridView1.DataSource = dtSource;
 
         }
         private void btnSave_Click(object sender, EventArgs e)
@@ -72,28 +73,26 @@ namespace VFD1.Project
         }
         private void SaveChanges()
         {
-            using (XLWorkbook workBook = new XLWorkbook(DataSource))
+            File.Delete(DataSourceInstrumentList);
+            using (var writer = new StreamWriter(DataSourceInstrumentList))
+            using (var csvWriter = new CsvWriter(writer))
             {
-                var insList = workBook.Worksheet(3);// inslst  
-
-                //DeleteAllFirst
-                bool First = true;
-                foreach (IXLRow row in insList.Rows())
-                {
-                    if (!First)
-                    row.Delete();
-                    First = false;
-                }
-
-                    int i = 0;
+                List<InstrumentList> lst = new List<InstrumentList>();
+                InstrumentList ie = new InstrumentList();
+                 
                 foreach (DataRow dr in dtSource.Rows)
                 {
-                    i++;
-                    insList.Cell(i+1, 1).Value = dr["colClassification1"].ToString();
-                    insList.Cell(i+1, 2).Value = dr["colClassification2"].ToString();
-                    insList.Cell(i+1, 3).Value = dr["colClassification3"].ToString(); 
+                    ie = new InstrumentList();
+                    ie.Classification_1 = dr["colClassification1"].ToString().Trim();
+                    ie.Classification_2 = dr["colClassification2"].ToString().Trim();
+                    ie.Classification_3 = dr["colClassification3"].ToString().Trim();
+                    lst.Add(ie);
+
                 }
-                workBook.Save();
+                csvWriter.WriteRecords(lst);
+                csvWriter.Flush();
+                writer.Flush();
+                writer.Close();
             }
             BindGrid();
         } 
@@ -128,5 +127,12 @@ namespace VFD1.Project
 
 
         }
+    }
+    public class InstrumentList
+    {
+        public string Classification_1 { get; set; }
+        public string Classification_2 { get; set; }
+        public string Classification_3 { get; set; }
+
     }
 }

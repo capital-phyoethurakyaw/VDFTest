@@ -327,6 +327,9 @@ ASALocalRun/
 *.dwg
 !DataSource/*.dwg
 
+*.csv
+!DataSource/*.csv
+
 # MSBuild Binary and Structured Log
 *.binlog
 
