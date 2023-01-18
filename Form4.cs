@@ -382,6 +382,7 @@ namespace VFD1
                         if (f is vdPolyline)
                         {
                             vdPolyline poly = (vdPolyline)f;
+                         //   if ( this.destination == null)
                             this.destination = new Destination(poly);
                         }
                     }
@@ -908,7 +909,7 @@ namespace VFD1
             RefreshUpdateDestination();//
             DrawPolylineDestination();
             RefreshDoc();//
-                         //Dijkstra
+            //Dijkstra
             Initialize();
             GetEntities();
             makeGrid(true);//
