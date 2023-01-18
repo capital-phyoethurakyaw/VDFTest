@@ -908,7 +908,8 @@ namespace VFD1
             RefreshUpdateDestination();//
             DrawPolylineDestination();
             RefreshDoc();//
-            //Dijkstra
+                         //Dijkstra
+            Initialize();
             GetEntities();
             makeGrid(true);//
         }
