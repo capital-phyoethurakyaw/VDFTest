@@ -12,9 +12,9 @@ namespace VFD1
             int n = data.GetLength(0);
             int i, j, k = 0;
             double min;
-            int[] v = new int[n];
+            int[] v = new int[n]; // Visited Array . . . 
             double[] distance = new double[n];
-            int[] via = new int[n];
+            int[] via = new int[n]; // Via Link  come from . . .
             for (j = 0; j < n; j++)
             {
                 v[j] = 0;
@@ -57,7 +57,8 @@ namespace VFD1
                 while (true)
                 {
                     path[path_cnt++] = k;
-                    if (k == start) break;
+                    if (k == start) 
+                        break;
                     k = via[k];
                 }
             }

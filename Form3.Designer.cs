@@ -47,7 +47,20 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.button3 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.txtHTolerance = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtMaxLength = new System.Windows.Forms.TextBox();
+            this.txtDuctOptimize = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txtVTolerenace = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.lblMaxLengthInstrument = new System.Windows.Forms.Label();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAllLayerInstruments)).BeginInit();
             this.SuspendLayout();
@@ -62,8 +75,9 @@
             this.vdFramedControl1.Location = new System.Drawing.Point(12, 12);
             this.vdFramedControl1.Name = "vdFramedControl1";
             this.vdFramedControl1.PropertyGridWidth = ((uint)(300u));
-            this.vdFramedControl1.Size = new System.Drawing.Size(1124, 680);
+            this.vdFramedControl1.Size = new System.Drawing.Size(1124, 548);
             this.vdFramedControl1.TabIndex = 44;
+            this.vdFramedControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.vdFramedControl1_MouseDown);
             // 
             // tableLayoutPanel1
             // 
@@ -123,7 +137,7 @@
             // 
             this.btnRouting.Location = new System.Drawing.Point(1145, 116);
             this.btnRouting.Name = "btnRouting";
-            this.btnRouting.Size = new System.Drawing.Size(101, 34);
+            this.btnRouting.Size = new System.Drawing.Size(73, 34);
             this.btnRouting.TabIndex = 51;
             this.btnRouting.Text = "Routing";
             this.btnRouting.UseVisualStyleBackColor = true;
@@ -131,9 +145,9 @@
             // 
             // btnDimension
             // 
-            this.btnDimension.Location = new System.Drawing.Point(1252, 116);
+            this.btnDimension.Location = new System.Drawing.Point(1224, 116);
             this.btnDimension.Name = "btnDimension";
-            this.btnDimension.Size = new System.Drawing.Size(101, 34);
+            this.btnDimension.Size = new System.Drawing.Size(71, 34);
             this.btnDimension.TabIndex = 52;
             this.btnDimension.Text = "Dimension";
             this.btnDimension.UseVisualStyleBackColor = true;
@@ -147,9 +161,9 @@
             this.dgvAllLayerInstruments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvAllLayerInstruments.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.collayer});
-            this.dgvAllLayerInstruments.Location = new System.Drawing.Point(1145, 170);
+            this.dgvAllLayerInstruments.Location = new System.Drawing.Point(1145, 156);
             this.dgvAllLayerInstruments.Name = "dgvAllLayerInstruments";
-            this.dgvAllLayerInstruments.Size = new System.Drawing.Size(316, 233);
+            this.dgvAllLayerInstruments.Size = new System.Drawing.Size(316, 169);
             this.dgvAllLayerInstruments.TabIndex = 53;
             // 
             // collayer
@@ -164,9 +178,9 @@
             // lstInstrument
             // 
             this.lstInstrument.FormattingEnabled = true;
-            this.lstInstrument.Location = new System.Drawing.Point(1142, 470);
+            this.lstInstrument.Location = new System.Drawing.Point(1142, 392);
             this.lstInstrument.Name = "lstInstrument";
-            this.lstInstrument.Size = new System.Drawing.Size(319, 121);
+            this.lstInstrument.Size = new System.Drawing.Size(319, 69);
             this.lstInstrument.TabIndex = 54;
             this.lstInstrument.SelectedIndexChanged += new System.EventHandler(this.lstInstrument_SelectedIndexChanged);
             // 
@@ -175,7 +189,7 @@
             this.btnIncre.BackColor = System.Drawing.Color.Transparent;
             this.btnIncre.Font = new System.Drawing.Font("Microsoft Sans Serif", 17.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnIncre.ForeColor = System.Drawing.Color.Red;
-            this.btnIncre.Location = new System.Drawing.Point(1144, 413);
+            this.btnIncre.Location = new System.Drawing.Point(1144, 335);
             this.btnIncre.Name = "btnIncre";
             this.btnIncre.Size = new System.Drawing.Size(34, 34);
             this.btnIncre.TabIndex = 55;
@@ -188,7 +202,7 @@
             this.btnDecre.BackColor = System.Drawing.Color.Transparent;
             this.btnDecre.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDecre.ForeColor = System.Drawing.Color.Red;
-            this.btnDecre.Location = new System.Drawing.Point(1184, 413);
+            this.btnDecre.Location = new System.Drawing.Point(1184, 335);
             this.btnDecre.Name = "btnDecre";
             this.btnDecre.Size = new System.Drawing.Size(34, 34);
             this.btnDecre.TabIndex = 56;
@@ -202,7 +216,7 @@
             this.cboDesti.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDesti.FormattingEnabled = true;
             this.cboDesti.ItemHeight = 13;
-            this.cboDesti.Location = new System.Drawing.Point(1253, 626);
+            this.cboDesti.Location = new System.Drawing.Point(1250, 476);
             this.cboDesti.Name = "cboDesti";
             this.cboDesti.Size = new System.Drawing.Size(211, 21);
             this.cboDesti.TabIndex = 59;
@@ -212,7 +226,7 @@
             this.cboObs.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboObs.FormattingEnabled = true;
             this.cboObs.ItemHeight = 13;
-            this.cboObs.Location = new System.Drawing.Point(1252, 667);
+            this.cboObs.Location = new System.Drawing.Point(1249, 505);
             this.cboObs.Name = "cboObs";
             this.cboObs.Size = new System.Drawing.Size(211, 21);
             this.cboObs.TabIndex = 60;
@@ -220,7 +234,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1142, 454);
+            this.label2.Location = new System.Drawing.Point(1142, 376);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(56, 13);
             this.label2.TabIndex = 61;
@@ -229,7 +243,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(1142, 626);
+            this.label3.Location = new System.Drawing.Point(1139, 476);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(60, 13);
             this.label3.TabIndex = 62;
@@ -238,7 +252,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1142, 667);
+            this.label4.Location = new System.Drawing.Point(1139, 505);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(49, 13);
             this.label4.TabIndex = 63;
@@ -248,21 +262,153 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(1382, 557);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(78, 37);
+            this.button3.TabIndex = 67;
+            this.button3.Text = "Relocate";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1359, 116);
+            this.button1.Location = new System.Drawing.Point(1301, 116);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(101, 34);
-            this.button1.TabIndex = 64;
+            this.button1.Size = new System.Drawing.Size(64, 34);
+            this.button1.TabIndex = 66;
             this.button1.Text = "Explode";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // txtHTolerance
+            // 
+            this.txtHTolerance.Location = new System.Drawing.Point(1139, 609);
+            this.txtHTolerance.Name = "txtHTolerance";
+            this.txtHTolerance.Size = new System.Drawing.Size(76, 20);
+            this.txtHTolerance.TabIndex = 71;
+            this.txtHTolerance.Text = "5";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(1139, 593);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(72, 13);
+            this.label5.TabIndex = 73;
+            this.label5.Text = "Horizontal Tol";
+            // 
+            // txtMaxLength
+            // 
+            this.txtMaxLength.Location = new System.Drawing.Point(1139, 565);
+            this.txtMaxLength.Name = "txtMaxLength";
+            this.txtMaxLength.ReadOnly = true;
+            this.txtMaxLength.Size = new System.Drawing.Size(76, 20);
+            this.txtMaxLength.TabIndex = 75;
+            this.txtMaxLength.Text = "0";
+            // 
+            // txtDuctOptimize
+            // 
+            this.txtDuctOptimize.Location = new System.Drawing.Point(1139, 664);
+            this.txtDuctOptimize.Name = "txtDuctOptimize";
+            this.txtDuctOptimize.Size = new System.Drawing.Size(76, 20);
+            this.txtDuctOptimize.TabIndex = 76;
+            this.txtDuctOptimize.Text = "20";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(1136, 648);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(74, 13);
+            this.label7.TabIndex = 77;
+            this.label7.Text = "%  Cable Duct";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(1246, 593);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(60, 13);
+            this.label6.TabIndex = 79;
+            this.label6.Text = "Vertical Tol";
+            // 
+            // txtVTolerenace
+            // 
+            this.txtVTolerenace.Location = new System.Drawing.Point(1249, 609);
+            this.txtVTolerenace.Name = "txtVTolerenace";
+            this.txtVTolerenace.ReadOnly = true;
+            this.txtVTolerenace.Size = new System.Drawing.Size(76, 20);
+            this.txtVTolerenace.TabIndex = 78;
+            this.txtVTolerenace.Text = "5";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(1137, 546);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(63, 13);
+            this.label8.TabIndex = 80;
+            this.label8.Text = "Max Length";
+            // 
+            // lblMaxLengthInstrument
+            // 
+            this.lblMaxLengthInstrument.AutoSize = true;
+            this.lblMaxLengthInstrument.Location = new System.Drawing.Point(1221, 565);
+            this.lblMaxLengthInstrument.Name = "lblMaxLengthInstrument";
+            this.lblMaxLengthInstrument.Size = new System.Drawing.Size(0, 13);
+            this.lblMaxLengthInstrument.TabIndex = 81;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(1386, 726);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(78, 37);
+            this.button4.TabIndex = 82;
+            this.button4.Text = "Export";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(1386, 655);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(78, 37);
+            this.button5.TabIndex = 83;
+            this.button5.Text = "Optimize";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(1249, 655);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(82, 33);
+            this.button6.TabIndex = 84;
+            this.button6.Text = "Setting";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // Form3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1476, 736);
+            this.ClientSize = new System.Drawing.Size(1476, 806);
+            this.Controls.Add(this.button6);
+            this.Controls.Add(this.button5);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.lblMaxLengthInstrument);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.txtVTolerenace);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.txtDuctOptimize);
+            this.Controls.Add(this.txtMaxLength);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txtHTolerance);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -280,7 +426,9 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.vdFramedControl1);
             this.Name = "Form3";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form3";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form3_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvAllLayerInstruments)).EndInit();
@@ -310,6 +458,19 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.DataGridViewTextBoxColumn collayer;
+        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox txtHTolerance;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txtMaxLength;
+        private System.Windows.Forms.TextBox txtDuctOptimize;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox txtVTolerenace;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label lblMaxLengthInstrument;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
     }
 }
