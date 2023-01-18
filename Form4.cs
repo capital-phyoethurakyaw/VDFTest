@@ -909,7 +909,7 @@ namespace VFD1
             DrawPolylineDestination();
             RefreshDoc();//
             //Dijkstra
-            //GetEntities();
+            GetEntities();
             makeGrid(true);//
         }
 
