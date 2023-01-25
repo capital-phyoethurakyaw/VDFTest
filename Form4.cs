@@ -63,8 +63,8 @@ namespace VFD1
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             string fname;
-            
 
+            Initialize();
             object ret = vdsc.BaseControl.ActiveDocument.GetOpenFileNameDlg(0, "", 0);
             if (ret == null) return;
 
@@ -107,32 +107,38 @@ namespace VFD1
             return dt;
         }
         DataTable dtEntities;
-        private void RefreshUpdateDestination()
+        private void RefreshUpdateDestination(bool OnlyObs = false)
         {
             foreach (vdFigure f in vdsc.BaseControl.ActiveDocument.Model.Entities)
             {
                 //
-                if (f != null && f.Layer.Name.ToLower().ToString().Contains("destination") && f is vdPolyline vi)
-                { 
-                    vi.Explode().RemoveAll();
-                    vi.Explode().EraseAll();
-                    vi.Deleted = true;
-                    vi.Explode().RemoveAll(); 
-                }
-            }
-            foreach (vdFigure f in vdsc.BaseControl.ActiveDocument.Model.Entities)
-            {
-                if (f != null && f.Layer.Name.ToLower().ToString().Contains("obstacle") && f is vdPolyline vi && vi.Flag != VectorDraw.Professional.Constants.VdConstPlineFlag.PlFlagCLOSE)
+                if (!OnlyObs)
                 {
-                    vi.Explode().RemoveAll();
-                    vi.Explode().EraseAll();
-                    vi.Deleted = true;
-                    vi.Explode().RemoveAll();
+                    if (f != null && f.Layer.Name.ToLower().ToString().Contains("destination") && f is vdPolyline vi)
+                    {
+                        Removepoly(vi);
+                    }
+                }
+                if (f != null && f.Layer.Name.ToLower().ToString().Contains("obstacle") && f is vdPolyline vil && vil.Flag != VectorDraw.Professional.Constants.VdConstPlineFlag.PlFlagCLOSE)
+                {
+                    Removepoly(vil);
+                }
+                if (f != null && f is vdPolyline vopen && vopen.Flag != VectorDraw.Professional.Constants.VdConstPlineFlag.PlFlagOPEN)
+                {
+                    if (  f.Layer.Name.ToLower().ToString().Contains("obstacle") )
+                        Removepoly(vopen);
                 }
             }
             vdsc.BaseControl.Redraw();
+            vdsc.BaseControl.ActiveDocument.Update();
             vdsc.BaseControl.ActiveDocument.Redraw(true);
-            vdsc.BaseControl.ReFresh();
+        }
+        private void Removepoly(vdPolyline vdpl)
+        {
+            vdpl.Explode().RemoveAll();
+            vdpl.Explode().EraseAll();
+            vdpl.Deleted = true;
+            vdpl.Explode().RemoveAll();
         }
         private void Initialize()
         {
@@ -145,6 +151,8 @@ namespace VFD1
               boundary = new vdPolyline();
               offsetBoundary= new vdPolyline();
               destination= null;
+            IsRoute = IsRelocate =  false;
+            button1.Enabled = button3.Enabled = true;
         }
         private void RefreshUpdate()
         {
@@ -155,12 +163,14 @@ namespace VFD1
                 {
                     (blk as vdBlock).Entities.RemoveAll();
                 }
-            } 
+            }
+            vdsc.BaseControl.ActiveDocument.Update( ); 
             vdsc.BaseControl.ActiveDocument.Redraw(true); 
 
         }
         private void SettingSourceDestination()
         {
+            dtEntities = new DataTable();
             dtEntities = SettingTable();
             int obsOccurence = 0;
             foreach (vdFigure f in vdsc.BaseControl.ActiveDocument.Model.Entities)
@@ -197,7 +207,8 @@ namespace VFD1
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("One of the VdInsert of VdBlock should be comprised of VdLines");
+                    MessageBox.Show(ex.Message);
+                    Initialize();
                     return;
                 }
 
@@ -205,7 +216,8 @@ namespace VFD1
         }
         private void SettingSource()
         {
-            dtEntities = SettingTable();
+            dtEntities = new DataTable();
+            dtEntities =   SettingTable();
             int obsOccurence = 0;
             foreach (vdFigure f in vdsc.BaseControl.ActiveDocument.Model.Entities)
             {
@@ -282,6 +294,8 @@ namespace VFD1
             //Desti
             //butCircle_Click( new  gPoint( Centroids[0].X, Centroids[0].Y));
             gPoint NewCentroid = new gPoint(OCentriod.x - Centroids[0].X, OCentriod.y - Centroids[0].Y);
+            if (Convert.ToInt32(NewCentroid.x) == 0 && Convert.ToInt32(NewCentroid.y) == 0 && Convert.ToInt32(NewCentroid.z) == 0)
+                return;
             foreach (DataRow dr in dtEntities.Rows)
             {
                 completeOnepolygon++;
@@ -341,57 +355,82 @@ namespace VFD1
 
             }
         }
-        public void GetEntities()
+        protected static bool IsRoute = false;
+        protected static bool IsRelocate = false;
+        public void GetEntities(bool IsUpdateDestination =false)
         {
-            try
+            if (IsUpdateDestination)
             {
                 foreach (vdFigure f in vdsc.BaseControl.ActiveDocument.Model.Entities)
                 {
-
-                    if (f.Layer.Name == lstboxInstLayer.Items[0].ToString())
-                    {
-                        if ((f is vdCircle))
-                        {
-                            vdCircle circle = (vdCircle)f;
-                            this.instrument.Add(circle);
-
-                            Instrument instrument = new Instrument(circle);
-                            this.instruments.Add(instrument);
-                        }
-                    }
-                    else if (f.Layer.Name == cboObs.SelectedItem.ToString())
-                    {
-                        if ((f is vdPolyline))
-                        {
-                            vdPolyline poly = (vdPolyline)f;
-                            this.obstacles.Add(poly);
-                        }
-                    }
-                    else if (f.Layer.Name == "Boundary")
-                    {
-                        if ((f is vdPolyline))
-                        {
-                            vdPolyline poly = (vdPolyline)f;
-                            this.boundary = poly;
-                            vdCurves c = poly.getOffsetCurve(1000); ;
-                            this.offsetBoundary = new vdPolyline(c.Document, c[0].GetGripPoints());
-                        }
-                    }
-                    else if (f.Layer.Name == cboDesti.SelectedItem.ToString())
+                    if (f.Layer.Name == cboDesti.SelectedItem.ToString())
                     {
                         if (f is vdPolyline)
                         {
                             vdPolyline poly = (vdPolyline)f;
-                         //   if ( this.destination == null)
+                            //   if ( this.destination == null)
                             this.destination = new Destination(poly);
                         }
                     }
                 }
+                return;
             }
-            catch (Exception ex)
+            if (!IsRoute)
             {
-                MessageBox.Show(ex.Message + Environment.NewLine + "***Possibly it should choose correct destination, instrument or obstacles");
-            }
+                try
+                {
+
+
+                    foreach (vdFigure f in vdsc.BaseControl.ActiveDocument.Model.Entities)
+                    {
+
+                        if (f.Layer.Name == lstboxInstLayer.Items[0].ToString())
+                        {
+                            if ((f is vdCircle))
+                            {
+                                vdCircle circle = (vdCircle)f;
+                                this.instrument.Add(circle);
+
+                                Instrument instrument = new Instrument(circle);
+                                this.instruments.Add(instrument);
+                            }
+                        }
+                        else if (f.Layer.Name == cboObs.SelectedItem.ToString())
+                        {
+                            if ((f is vdPolyline))
+                            {
+                                vdPolyline poly = (vdPolyline)f;
+                                this.obstacles.Add(poly);
+                            }
+                        }
+                        else if (f.Layer.Name == "Boundary")
+                        {
+                            if ((f is vdPolyline))
+                            {
+                                vdPolyline poly = (vdPolyline)f;
+                                this.boundary = poly;
+                                vdCurves c = poly.getOffsetCurve(1000); ;
+                                this.offsetBoundary = new vdPolyline(c.Document, c[0].GetGripPoints());
+                            }
+                        }
+                        else if (f.Layer.Name == cboDesti.SelectedItem.ToString())
+                        {
+                            if (f is vdPolyline)
+                            {
+                                vdPolyline poly = (vdPolyline)f;
+                                //   if ( this.destination == null)
+                                this.destination = new Destination(poly);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + Environment.NewLine + "***Possibly it should choose correct destination, instrument or obstacles");
+                }
+                IsRoute = !IsRoute;
+            } 
+                
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -736,6 +775,7 @@ namespace VFD1
         }
         private void Preparepoint()
         {
+            if (Points.Count > 0) return;
             Points.Clear();
             foreach (var lst in instruments)
                 Points.Add(new PointData(new System.Drawing.Point(Convert.ToInt32(lst.centerPoint.x), Convert.ToInt32(lst.centerPoint.y)), 0));
@@ -757,14 +797,17 @@ namespace VFD1
         }
         private void RefreshDoc()
         {
+            vdsc.BaseControl.ActiveDocument.Update();
             vdsc.BaseControl.ActiveDocument.Redraw(true);
         }
         private void button1_Click_1(object sender, EventArgs e)
         {
+            
             GetEntities();
-            //Kmean
-            //Preparepoint();
+            RefreshUpdateDestination(true);//
             makeGrid();
+             button3.Enabled= false;
+
         }
 
         private void labelObst_Click(object sender, EventArgs e)
@@ -859,6 +902,8 @@ namespace VFD1
         }
         private void UpdateSolution()
         {
+            //if (Centroids.Count > 0)
+            //    return;
             // Find new centroids.
             int num_clusters = Centroids.Count;
             PointF[] new_centers = new PointF[num_clusters];
@@ -895,24 +940,26 @@ namespace VFD1
 
             Centroids = new_centroids;
         }
+
         private void button3_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(DocPath))
-                return;
-            Initialize();
-            GetEntities(); //
-            //Kmean
-            Preparepoint();//
-            RefreshDoc();//
-            UpdateSolution();//
-            SettingSourceDestination();//
-            RefreshUpdateDestination();//
-            DrawPolylineDestination();
-            RefreshDoc();//
-            //Dijkstra
-            Initialize();
-            GetEntities();
-            makeGrid(true);//
+            if (!IsRelocate)
+            {
+                if (String.IsNullOrEmpty(DocPath))
+                    return;
+                GetEntities();
+                //Kmean
+                Preparepoint();// 
+                UpdateSolution();//
+                SettingSourceDestination();//
+                RefreshUpdateDestination();//
+                DrawPolylineDestination();
+                GetEntities(true); //
+                //Dijkstra 
+                makeGrid(true);// 
+                IsRelocate = !IsRelocate;
+                button1.Enabled = false;
+            }
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -927,6 +974,8 @@ namespace VFD1
         }
         private void Segmentaion()
         {
+            if (dtInstrument.Rows.Count == 0)
+                return;
             if (dtInstrument == null)
                 return;
             dtSegmentation = new DataTable();
