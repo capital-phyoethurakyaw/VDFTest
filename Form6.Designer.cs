@@ -30,11 +30,11 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.button1 = new System.Windows.Forms.Button();
             this.SG = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.OptimalDuctSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Length = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TotalCable = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -64,6 +64,16 @@
             this.dataGridView1.Size = new System.Drawing.Size(867, 377);
             this.dataGridView1.TabIndex = 4;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(806, 494);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(83, 36);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Close";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // SG
             // 
             this.SG.DataPropertyName = "SG";
@@ -75,7 +85,7 @@
             // OptimalDuctSize
             // 
             this.OptimalDuctSize.DataPropertyName = "OptimalDuctSize";
-            this.OptimalDuctSize.HeaderText = "OptimalDuctSize";
+            this.OptimalDuctSize.HeaderText = "OptimalDuctSize(mm2)";
             this.OptimalDuctSize.Name = "OptimalDuctSize";
             this.OptimalDuctSize.ReadOnly = true;
             this.OptimalDuctSize.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -85,7 +95,7 @@
             // Length
             // 
             this.Length.DataPropertyName = "Length";
-            this.Length.HeaderText = "Length";
+            this.Length.HeaderText = "Length(m)";
             this.Length.Name = "Length";
             this.Length.ReadOnly = true;
             // 
@@ -96,16 +106,6 @@
             this.TotalCable.Name = "TotalCable";
             this.TotalCable.ReadOnly = true;
             this.TotalCable.Width = 120;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(806, 494);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(83, 36);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "Close";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form6
             // 
@@ -129,10 +129,10 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.DataGridViewTextBoxColumn SG;
         private System.Windows.Forms.DataGridViewTextBoxColumn OptimalDuctSize;
         private System.Windows.Forms.DataGridViewTextBoxColumn Length;
         private System.Windows.Forms.DataGridViewTextBoxColumn TotalCable;
-        private System.Windows.Forms.Button button1;
     }
 }

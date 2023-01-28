@@ -1108,7 +1108,7 @@ namespace VFD1
             {
                 TextInsert(Gp(dr["SP"].ToString()).x, Gp(dr["EP"].ToString()).y, dr["SG"].ToString(), true);
             }
-
+           // dtOptimalResult.Columns
             Form6 pro = new Form6();
             pro.ShowDialog();
         }

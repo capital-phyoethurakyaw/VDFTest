@@ -30,10 +30,10 @@
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.Instrument = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstrumentType = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Dimension = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -62,6 +62,16 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
+            this.label1.Location = new System.Drawing.Point(23, 27);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(129, 20);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Instrument Type";
+            // 
             // Instrument
             // 
             this.Instrument.DataPropertyName = "Instrument";
@@ -73,27 +83,17 @@
             // InstrumentType
             // 
             this.InstrumentType.DataPropertyName = "InstrumentType";
-            this.InstrumentType.HeaderText = "InstrumentType";
+            this.InstrumentType.HeaderText = "InstrumentType(mm2)";
             this.InstrumentType.Name = "InstrumentType";
             this.InstrumentType.Width = 300;
             // 
             // Dimension
             // 
             this.Dimension.DataPropertyName = "Dimension";
-            this.Dimension.HeaderText = "Length";
+            this.Dimension.HeaderText = "Length(m)";
             this.Dimension.Name = "Dimension";
             this.Dimension.ReadOnly = true;
             this.Dimension.Width = 120;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
-            this.label1.Location = new System.Drawing.Point(23, 27);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(129, 20);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Instrument Type";
             // 
             // Form5
             // 
@@ -117,9 +117,9 @@
 
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Instrument;
         private System.Windows.Forms.DataGridViewComboBoxColumn InstrumentType;
         private System.Windows.Forms.DataGridViewTextBoxColumn Dimension;
-        private System.Windows.Forms.Label label1;
     }
 }
