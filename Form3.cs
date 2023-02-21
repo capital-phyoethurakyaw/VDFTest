@@ -82,7 +82,7 @@ namespace VFD1
             DataTable dtLyrIns = new DataTable();
             dtLyrIns.Columns.Add("colLayer");
 
-
+            
             foreach (var v in allControl)
             {
                 if (v is VectorDraw.Professional.vdPrimaries.vdLayer lyrCircle)
@@ -110,10 +110,79 @@ namespace VFD1
             cboDesti.DataSource = lyrDestination;
             cboObs.DataSource = lyrObstacle;
 
-
+            var usedBlk = vdFramedControl1.BaseControl.ActiveDocument.Blocks.GetNotDeletedItems();
+            foreach (var ub in usedBlk)
+            {
+                if (ub is vdBlock vb)
+                    blkvdInsertCollection.Add((vb).Name.ToString().Replace("vdInsert ", "").TrimStart());
+            }
 
         }
+        private bool Check_1C_2A(vdEntities ve)
+        {
+            foreach (var lines in ve)
+            {
+                if (!(lines is vdCircle) && !(lines is vdAttribDef))
+                    return false;
+            }
+            return true;
+        }
+        private void TryDetect()
+        {
+            var dtCircles = SettingTable();
+            int obsOccurence = 0;
+            foreach (vdFigure f in vdFramedControl1.BaseControl.ActiveDocument.Model.Entities)
+            {
+                if (f != null && f.Layer.Name.ToLower().ToString().Contains("0"))/// == cboObs.SelectedItem.ToString())
+                {
+                    try
+                    {
+                        if (f is vdInsert vi && blkvdInsertCollection.Contains(f.ToString().Replace("vdInsert ", "")))
+                        {
+                            var ent = vi.Explode();
+                            if (ent != null && Check_1C_2A(ent))
+                            {
+                                obsOccurence++;
+                                int entityOccurence = 0;
+                                var tagName = f.ToString().Replace("vdInsert ", "");
+                                var t1 = "";
+                                var t2 = "";
+                                foreach (var e in ent)
+                                {
+                                    entityOccurence++;
 
+                                    if (e is vdAttribDef va && va.TextString == "T1")
+                                        t1 = va.ValueString;
+                                    if (e is vdAttribDef vb && vb.TextString == "T2")
+                                        t2 = vb.ValueString;
+                                }
+                                if (obsOccurence == 1)
+                                {
+                                    lst_circleBlk.Items.Add(
+                                     "Instrument_No" + "     " + "Block Name" + "      " + "T1" + "     " + "T2"
+                                      );
+                                    lst_circleBlk.Items.Add(Environment.NewLine);
+                                }
+                                lst_circleBlk.Items.Add(
+                                      "Instrument_" + obsOccurence + "      " + tagName + "                " + t1 + "     " + t2
+                                       );
+                            }
+                            else
+                            {
+                                MessageBox.Show("One of the VdInsert of VdBlock should be comprised of VdLines");
+                                return;
+                            }
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+
+            }
+        }
         private void btnIncre_Click(object sender, EventArgs e)
         {
             var dgr = dgvAllLayerInstruments.CurrentRow;
@@ -830,7 +899,10 @@ namespace VFD1
             //Explode();
             // AddBlockItems();
         }
-
+        private void button7_Click(object sender, EventArgs e)
+        {
+            TryDetect();
+        }
         private void Explode()
         {
 
@@ -1447,6 +1519,8 @@ namespace VFD1
             Form5 pro = new Form5();
             pro.ShowDialog();  
         }
+
+      
     }
     public class CableSchedule
     {

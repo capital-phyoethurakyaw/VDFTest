@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.Instrument = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InstrumentType = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Dimension = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -51,26 +51,6 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(866, 377);
             this.dataGridView1.TabIndex = 0;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(809, 488);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(83, 36);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Close";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
-            this.label1.Location = new System.Drawing.Point(23, 27);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(129, 20);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Instrument Type";
             // 
             // Instrument
             // 
@@ -94,6 +74,26 @@
             this.Dimension.Name = "Dimension";
             this.Dimension.ReadOnly = true;
             this.Dimension.Width = 120;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(809, 488);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(83, 36);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Close";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
+            this.label1.Location = new System.Drawing.Point(23, 27);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(129, 20);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Instrument Type";
             // 
             // Form5
             // 
